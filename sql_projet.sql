@@ -1,3 +1,9 @@
+-- SAE1.03-1.04
+-- Groupe S1C2
+-- Groupe SAE 22
+--
+-- SANDT Timothé - MIGUET Maxime - TALALI Zakaria
+
 CREATE TABLE Individu(
    identifiant_individu COUNTER,
    nom VARCHAR(50),
