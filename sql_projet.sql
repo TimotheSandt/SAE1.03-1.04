@@ -56,8 +56,10 @@ CREATE TABLE Velo(
    code_categorie_velo INT NOT NULL,
    code_etat INT NOT NULL,
    PRIMARY KEY(code_velo),
-   FOREIGN KEY(code_categorie_velo) REFERENCES Categorie_velo(code_categorie_velo),
-   FOREIGN KEY(code_etat) REFERENCES Etat(code_etat)
+   CONSTRAINT fk_velo_categorie
+      FOREIGN KEY(code_categorie_velo) REFERENCES Categorie_velo(code_categorie_velo),
+   CONSTRAINT fk_velo_etat
+      FOREIGN KEY(code_etat) REFERENCES Etat(code_etat)
 );
 
 CREATE TABLE Reparation(
@@ -69,9 +71,12 @@ CREATE TABLE Reparation(
    code_velo INT NOT NULL,
    identifiant_individu INT NOT NULL,
    PRIMARY KEY(code_reparation),
-   FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
-   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
-   FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
+   CONSTRAINT fk_reparation_type
+      FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
+   CONSTRAINT fk_reparation_velo
+      FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
+   CONSTRAINT fk_reparation_individu
+      FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
 );
 
 CREATE TABLE loue(
@@ -82,9 +87,12 @@ CREATE TABLE loue(
    duree INT,
    prix DECIMAL(19,4),
    PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA),
-   FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
-   FOREIGN KEY(identifiant_individu_locataire) REFERENCES Individu(identifiant_individu),
-   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
+   CONSTRAINT fk_loue_bailleur
+      FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
+   CONSTRAINT fk_loue_locataire
+      FOREIGN KEY(identifiant_individu_locataire) REFERENCES Individu(identifiant_individu),
+   CONSTRAINT fk_loue_velo
+      FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
 );
 
 CREATE TABLE utilise(
@@ -93,8 +101,10 @@ CREATE TABLE utilise(
    date_utilisation DATE,
    quantite INT,
    PRIMARY KEY(code_piece, code_reparation),
-   FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
-   FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
+   CONSTRAINT fk_utilise_piece
+      FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
+   CONSTRAINT fk_utilise_reparation
+      FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
 
 SHOW TABLES;
@@ -103,6 +113,18 @@ SHOW TABLES;
 -- ----------- --
 -- Jeu de Test --
 -- ----------- --
+
+-- Modification des tables
+
+SHOW CREATE TABLE utilise;
+
+ALTER TABLE utilise 
+   DROP FOREIGN KEY fk_utilise_piece;
+SHOW CREATE TABLE utilise;
+
+ALTER TABLE utilise
+   ADD FOREIGN KEY(code_piece) REFERENCES Piece(code_piece);
+SHOW CREATE TABLE utilise;
 
 
 
