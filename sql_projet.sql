@@ -4,8 +4,8 @@
 --
 -- SANDT Timothe - MIGUET Maxime - TALALI Zakaria
 
-DROP TABLE IF EXISTS utilise;
-DROP TABLE IF EXISTS loue;
+DROP TABLE IF EXISTS Utilise;
+DROP TABLE IF EXISTS Loue;
 DROP TABLE IF EXISTS Reparation;
 DROP TABLE IF EXISTS Velo;
 DROP TABLE IF EXISTS Categorie_velo;
@@ -79,14 +79,14 @@ CREATE TABLE Reparation(
       FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
 );
 
-CREATE TABLE loue(
+CREATE TABLE Loue(
    identifiant_individu_bailleur INT,
    identifiant_individu_locataire INT,
    code_velo INT,
-   JJMMAAAA DATE,
-   duree INT,
-   prix DECIMAL(19,4),
-   PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA),
+   date_debut_location DATE,
+   duree_location INT,
+   prix_location DECIMAL(19,4),
+   PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, date_debut_location),
    CONSTRAINT fk_loue_bailleur
       FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
    CONSTRAINT fk_loue_locataire
@@ -95,11 +95,11 @@ CREATE TABLE loue(
       FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
 );
 
-CREATE TABLE utilise(
+CREATE TABLE Utilise(
    code_piece INT,
    code_reparation INT,
    date_utilisation DATE,
-   quantite INT,
+   quantite_utilise INT,
    PRIMARY KEY(code_piece, code_reparation),
    CONSTRAINT fk_utilise_piece
       FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
@@ -116,15 +116,15 @@ SHOW TABLES;
 
 -- Modification des tables
 
-SHOW CREATE TABLE utilise;
+SHOW CREATE TABLE Utilise;
 
-ALTER TABLE utilise 
+ALTER TABLE Utilise 
    DROP FOREIGN KEY fk_utilise_piece;
-SHOW CREATE TABLE utilise;
+SHOW CREATE TABLE Utilise;
 
-ALTER TABLE utilise
+ALTER TABLE Utilise
    ADD FOREIGN KEY(code_piece) REFERENCES Piece(code_piece);
-SHOW CREATE TABLE utilise;
+SHOW CREATE TABLE Utilise;
 
 
 
@@ -136,8 +136,8 @@ SHOW CREATE TABLE utilise;
 -- Categorie_velo;
 -- Velo;
 -- Reparation;
--- loue;
--- utilise;
+-- Loue;
+-- Utilise;
 
 INSERT INTO Individu (nom, prenom, adresse, telephone, email) 
 VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@gmail.com'),
@@ -198,7 +198,7 @@ VALUES ('2022-01-01', 1, NULL, 4, 1, 1),
       ('2023-03-03', 1, 'description', 3, 2, 1),
       ('2024-04-04', 5, 'La batterie était mauvaise, elle a été remplacé', 5, 4, 4);
 
-INSERT INTO loue (identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA, duree, prix) 
+INSERT INTO Loue (identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, date_debut_location, duree_location, prix_location) 
 VALUES (4, 2, 1, '2022-05-25', 1, 5.00),
       (4, 1, 4, '2023-03-15', 21, 130.00),
       (4, 4, 3, '2024-12-21', 31, 1500.00),
@@ -206,7 +206,7 @@ VALUES (4, 2, 1, '2022-05-25', 1, 5.00),
       (4, 3, 2, '2025-04-01', 544, 5800.00);
 
 
-INSERT INTO utilise (code_piece, code_reparation, date_utilisation, quantite) 
+INSERT INTO Utilise (code_piece, code_reparation, date_utilisation, quantite_utilise) 
 VALUES (4, 1, '2022-01-01', 2),
       (5, 2, '2022-02-02', 1),
       (6, 3, '2023-03-03', 2),
@@ -236,37 +236,37 @@ SELECT *
 FROM Reparation;
 
 SELECT * 
-FROM loue;
+FROM Loue;
 
 SELECT * 
-FROM utilise;
+FROM Utilise;
 
 
 
-SELECT Individu.prenom, Individu.nom, Velo.libelle_velo, Categorie_velo.libelle_categorie_velo, loue.prix, Etat.libelle_etat, loue.duree, loue.JJMMAAAA
-FROM loue 
-JOIN Individu ON Individu.identifiant_individu = loue.identifiant_individu_locataire
-JOIN Velo ON Velo.code_velo = loue.code_velo
+SELECT Individu.prenom, Individu.nom, Velo.libelle_velo, Categorie_velo.libelle_categorie_velo, Loue.prix_location, Etat.libelle_etat, Loue.duree_location, Loue.date_debut_location
+FROM Loue 
+JOIN Individu ON Individu.identifiant_individu = Loue.identifiant_individu_locataire
+JOIN Velo ON Velo.code_velo = Loue.code_velo
 JOIN Etat ON Etat.code_etat = Velo.code_etat
 JOIN Categorie_velo ON Categorie_velo.code_categorie_velo = Velo.code_categorie_velo
-WHERE prix > 100
-ORDER BY prix DESC, nom, prenom;
+WHERE prix_location > 100
+ORDER BY prix_location DESC, nom, prenom;
 
 
-SELECT CONCAT(Individu.prenom, ' ', Individu.nom) AS locataire, COUNT(identifiant_individu_locataire) AS nombre_de_location, SUM(loue.prix) AS prix_total
+SELECT CONCAT(Individu.prenom, ' ', Individu.nom) AS locataire, COUNT(identifiant_individu_locataire) AS nombre_de_location, SUM(Loue.prix_location) AS prix_total
 FROM Individu
-LEFT JOIN loue ON Individu.identifiant_individu = loue.identifiant_individu_locataire
+LEFT JOIN Loue ON Individu.identifiant_individu = Loue.identifiant_individu_locataire
 GROUP BY Individu.prenom, Individu.nom
 ORDER BY nombre_de_location DESC, prix_total DESC;
 
 
-SELECT ROUND(AVG(prix), 2) AS prix_moyen_par_location
-FROM loue;
+SELECT ROUND(AVG(prix_location), 2) AS prix_moyen_par_location
+FROM Loue;
 
 
-SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Piece.type_piece, utilise.quantite, Reparation.description_reparation
-FROM utilise
-JOIN Reparation ON Reparation.code_reparation = utilise.code_reparation
-JOIN Piece ON Piece.code_piece = utilise.code_piece
+SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Piece.type_piece, Utilise.quantite_utilise, Reparation.description_reparation
+FROM Utilise
+JOIN Reparation ON Reparation.code_reparation = Utilise.code_reparation
+JOIN Piece ON Piece.code_piece = Utilise.code_piece
 JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
 JOIN Velo ON Velo.code_velo = Reparation.code_velo;
