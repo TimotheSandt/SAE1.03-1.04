@@ -105,7 +105,6 @@ SHOW TABLES;
 -- ----------- --
 
 
-ALTER DROP CONSTRAINT 
 
 -- Ajout de donnée suivant l'ordre :
 -- Individu;
