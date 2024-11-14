@@ -12,7 +12,6 @@ DROP TABLE IF EXISTS Categorie_velo;
 DROP TABLE IF EXISTS Etat;
 DROP TABLE IF EXISTS Type_reparation;
 DROP TABLE IF EXISTS Piece;
-DROP TABLE IF EXISTS Date_reservation;
 DROP TABLE IF EXISTS Individu;
 
 
@@ -25,11 +24,6 @@ CREATE TABLE Individu(
    telephone VARCHAR(10),
    email VARCHAR(50),
    PRIMARY KEY(identifiant_individu)
-);
-
-CREATE TABLE Date_reservation(
-   JJMMAAAA DATE,
-   PRIMARY KEY(JJMMAAAA)
 );
 
 CREATE TABLE Piece(
@@ -70,7 +64,7 @@ CREATE TABLE Reparation(
    code_reparation INT AUTO_INCREMENT,
    date_reparation DATE,
    duree_reparation INT,
-   description TEXT,
+   description_reparation TEXT,
    code_type_reparation INT NOT NULL,
    code_velo INT NOT NULL,
    identifiant_individu INT NOT NULL,
@@ -90,8 +84,7 @@ CREATE TABLE loue(
    PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA),
    FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
    FOREIGN KEY(identifiant_individu_locataire) REFERENCES Individu(identifiant_individu),
-   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
-   FOREIGN KEY(JJMMAAAA) REFERENCES Date_reservation(JJMMAAAA)
+   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
 );
 
 CREATE TABLE utilise(
@@ -103,4 +96,7 @@ CREATE TABLE utilise(
    FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
    FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
+
+SHOW TABLES;
+
 
