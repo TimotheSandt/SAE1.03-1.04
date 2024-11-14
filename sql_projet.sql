@@ -100,7 +100,14 @@ CREATE TABLE utilise(
 SHOW TABLES;
 
 
+-- ----------- --
+-- Jeu de Test --
+-- ----------- --
 
+
+ALTER DROP CONSTRAINT 
+
+-- Ajout de donnée suivant l'ordre :
 -- Individu;
 -- Piece;
 -- Type_reparation;
@@ -112,10 +119,11 @@ SHOW TABLES;
 -- utilise;
 
 INSERT INTO Individu (nom, prenom, adresse, telephone, email) 
-VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@example.com'),
-      ('SANDT', 'Timothe', '11 rue de la paix', '0606060607', 'Z4R5p@example.com'),
-      ('MIGUET', 'Maxime', '12 rue de la paix', '0606060608', 'Z4R6p@example.com'),
-      ('DE CHEZ CARGLASS', 'Olivier', '13 rue de Carglass', '0310051515', 'carglass@carglass.com');
+VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@gmail.com'),
+      ('SANDT', 'Timothe', '11 rue de la paix', '0606060607', 'Z4R5p@gmail.com'),
+      ('MIGUET', 'Maxime', '12 rue de la paix', '0606060608', 'Z4R6p@yahoo.fr'),
+      ('DE CHEZ CARGLASS', 'Olivier', '13 rue de Carglass', '0310051515', 'carglass@carglass.com'),
+      ('DUPONT', 'Martin', '33 avenue des champs Elychgées', '0366662900', 'dupont.dupond@gmail.com');
 
 
 INSERT INTO Piece (type_piece) 
@@ -170,10 +178,11 @@ VALUES ('2022-01-01', 1, NULL, 4, 1, 1),
       ('2024-04-04', 5, 'La batterie était mauvaise, elle a été remplacé', 5, 4, 4);
 
 INSERT INTO loue (identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA, duree, prix) 
-VALUES (4, 2, 1, '2022-01-01', 1, 5.00),
-      (4, 1, 4, '2023-01-01', 21, 130.00),
-      (4, 4, 3, '2024-01-01', 31, 1500.00),
-      (4, 3, 2, '2025-01-01', 354464, -5800.00);
+VALUES (4, 2, 1, '2022-05-25', 1, 5.00),
+      (4, 1, 4, '2023-03-15', 21, 130.00),
+      (4, 4, 3, '2024-12-21', 31, 1500.00),
+      (3, 2, 2, '2024-12-01', 31, 300.00),
+      (4, 3, 2, '2025-04-01', 544, 5800.00);
 
 
 INSERT INTO utilise (code_piece, code_reparation, date_utilisation, quantite) 
@@ -181,3 +190,62 @@ VALUES (4, 1, '2022-01-01', 2),
       (5, 2, '2022-02-02', 1),
       (6, 3, '2023-03-03', 2),
       (7, 4, '2024-04-04', 1);
+
+
+-- Requête
+SELECT * 
+FROM Individu;
+
+SELECT * 
+FROM Piece;
+
+SELECT * 
+FROM Type_reparation;
+
+SELECT * 
+FROM Etat;
+
+SELECT * 
+FROM Categorie_velo;
+
+SELECT * 
+FROM Velo;
+
+SELECT * 
+FROM Reparation;
+
+SELECT * 
+FROM loue;
+
+SELECT * 
+FROM utilise;
+
+
+
+SELECT Individu.prenom, Individu.nom, Velo.libelle_velo, Categorie_velo.libelle_categorie_velo, loue.prix, Etat.libelle_etat, loue.duree, loue.JJMMAAAA
+FROM loue 
+JOIN Individu ON Individu.identifiant_individu = loue.identifiant_individu_locataire
+JOIN Velo ON Velo.code_velo = loue.code_velo
+JOIN Etat ON Etat.code_etat = Velo.code_etat
+JOIN Categorie_velo ON Categorie_velo.code_categorie_velo = Velo.code_categorie_velo
+WHERE prix > 100
+ORDER BY prix DESC, nom, prenom;
+
+
+SELECT CONCAT(Individu.prenom, ' ', Individu.nom) AS locataire, COUNT(identifiant_individu_locataire) AS nombre_de_location, SUM(loue.prix) AS prix_total
+FROM Individu
+LEFT JOIN loue ON Individu.identifiant_individu = loue.identifiant_individu_locataire
+GROUP BY Individu.prenom, Individu.nom
+ORDER BY nombre_de_location DESC, prix_total DESC;
+
+
+SELECT ROUND(AVG(prix), 2) AS prix_moyen_par_location
+FROM loue;
+
+
+SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Piece.type_piece, utilise.quantite, Reparation.description_reparation
+FROM utilise
+JOIN Reparation ON Reparation.code_reparation = utilise.code_reparation
+JOIN Piece ON Piece.code_piece = utilise.code_piece
+JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
+JOIN Velo ON Velo.code_velo = Reparation.code_velo;
