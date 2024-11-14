@@ -2,90 +2,105 @@
 -- Groupe S1C2
 -- Groupe SAE 22
 --
--- SANDT Timothé - MIGUET Maxime - TALALI Zakaria
+-- SANDT Timothe - MIGUET Maxime - TALALI Zakaria
+
+DROP TABLE IF EXISTS utilise;
+DROP TABLE IF EXISTS loue;
+DROP TABLE IF EXISTS Reparation;
+DROP TABLE IF EXISTS Velo;
+DROP TABLE IF EXISTS Categorie_velo;
+DROP TABLE IF EXISTS Etat;
+DROP TABLE IF EXISTS Type_reparation;
+DROP TABLE IF EXISTS Piece;
+DROP TABLE IF EXISTS Date_reservation;
+DROP TABLE IF EXISTS Individu;
+
+
 
 CREATE TABLE Individu(
-   identifiant_individu COUNTER,
+   identifiant_individu INT AUTO_INCREMENT,
    nom VARCHAR(50),
-   prénom VARCHAR(50),
+   prenom VARCHAR(50),
    adresse VARCHAR(255),
-   télephone VARCHAR(10),
+   telephone VARCHAR(10),
    email VARCHAR(50),
    PRIMARY KEY(identifiant_individu)
 );
 
-CREATE TABLE Date_réservation(
+CREATE TABLE Date_reservation(
    JJMMAAAA DATE,
    PRIMARY KEY(JJMMAAAA)
 );
 
-CREATE TABLE Pièce(
-   code_pièce COUNTER,
-   type_pièce VARCHAR(50),
-   PRIMARY KEY(code_pièce)
+CREATE TABLE Piece(
+   code_piece INT AUTO_INCREMENT,
+   type_piece VARCHAR(50),
+   PRIMARY KEY(code_piece)
 );
 
-CREATE TABLE Type_réparation(
-   code_type_réparation COUNTER,
-   libellé_type_réparation VARCHAR(50),
-   PRIMARY KEY(code_type_réparation)
+CREATE TABLE Type_reparation(
+   code_type_reparation INT AUTO_INCREMENT,
+   libelle_type_reparation VARCHAR(50),
+   PRIMARY KEY(code_type_reparation)
 );
 
 CREATE TABLE Etat(
-   code_état COUNTER,
-   libellé_état VARCHAR(50),
-   PRIMARY KEY(code_état)
+   code_etat INT AUTO_INCREMENT,
+   libelle_etat VARCHAR(50),
+   PRIMARY KEY(code_etat)
 );
 
-CREATE TABLE Catégorie_vélo(
-   code_catégorie_vélo COUNTER,
-   libellé_catégorie_vélo VARCHAR(50),
-   PRIMARY KEY(code_catégorie_vélo)
+CREATE TABLE Categorie_velo(
+   code_categorie_velo INT AUTO_INCREMENT,
+   libelle_categorie_velo VARCHAR(50),
+   PRIMARY KEY(code_categorie_velo)
 );
 
-CREATE TABLE Vélo(
-   code_vélo COUNTER,
-   libellé_vélo VARCHAR(50),
-   code_catégorie_vélo INT NOT NULL,
-   code_état INT NOT NULL,
-   PRIMARY KEY(code_vélo),
-   FOREIGN KEY(code_catégorie_vélo) REFERENCES Catégorie_vélo(code_catégorie_vélo),
-   FOREIGN KEY(code_état) REFERENCES Etat(code_état)
+CREATE TABLE Velo(
+   code_velo INT AUTO_INCREMENT,
+   libelle_velo VARCHAR(50),
+   code_categorie_velo INT NOT NULL,
+   code_etat INT NOT NULL,
+   PRIMARY KEY(code_velo),
+   FOREIGN KEY(code_categorie_velo) REFERENCES Categorie_velo(code_categorie_velo),
+   FOREIGN KEY(code_etat) REFERENCES Etat(code_etat)
 );
 
-CREATE TABLE Réparation(
-   code_réparation COUNTER,
-   date_réparation DATE,
+CREATE TABLE Reparation(
+   code_reparation INT AUTO_INCREMENT,
+   date_reparation DATE,
+   duree_reparation INT,
    description TEXT,
-   code_type_réparation INT NOT NULL,
-   code_vélo INT NOT NULL,
+   code_type_reparation INT NOT NULL,
+   code_velo INT NOT NULL,
    identifiant_individu INT NOT NULL,
-   PRIMARY KEY(code_réparation),
-   FOREIGN KEY(code_type_réparation) REFERENCES Type_réparation(code_type_réparation),
-   FOREIGN KEY(code_vélo) REFERENCES Vélo(code_vélo),
+   PRIMARY KEY(code_reparation),
+   FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
+   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
    FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
 );
 
 CREATE TABLE loue(
    identifiant_individu_bailleur INT,
    identifiant_individu_locataire INT,
-   code_vélo INT,
+   code_velo INT,
    JJMMAAAA DATE,
-   durée INT,
-   prix CURRENCY,
-   PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_vélo, JJMMAAAA),
+   duree INT,
+   prix DECIMAL(19,4),
+   PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, JJMMAAAA),
    FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
    FOREIGN KEY(identifiant_individu_locataire) REFERENCES Individu(identifiant_individu),
-   FOREIGN KEY(code_vélo) REFERENCES Vélo(code_vélo),
-   FOREIGN KEY(JJMMAAAA) REFERENCES Date_réservation(JJMMAAAA)
+   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
+   FOREIGN KEY(JJMMAAAA) REFERENCES Date_reservation(JJMMAAAA)
 );
 
 CREATE TABLE utilise(
-   code_pièce INT,
-   code_réparation INT,
+   code_piece INT,
+   code_reparation INT,
    date_utilisation DATE,
-   quantité INT,
-   PRIMARY KEY(code_pièce, code_réparation),
-   FOREIGN KEY(code_pièce) REFERENCES Pièce(code_pièce),
-   FOREIGN KEY(code_réparation) REFERENCES Réparation(code_réparation)
+   quantite INT,
+   PRIMARY KEY(code_piece, code_reparation),
+   FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
+   FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
+
