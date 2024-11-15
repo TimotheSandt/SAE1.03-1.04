@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS Categorie_velo;
 DROP TABLE IF EXISTS Etat;
 DROP TABLE IF EXISTS Type_reparation;
 DROP TABLE IF EXISTS Piece;
+DROP TABLE IF EXISTS Type_piece;
 DROP TABLE IF EXISTS Individu;
 
 
@@ -26,11 +27,20 @@ CREATE TABLE Individu(
    PRIMARY KEY(identifiant_individu)
 );
 
+CREATE TABLE Type_piece(
+   code_type_piece INT AUTO_INCREMENT,
+   libelle_type_piece VARCHAR(50),
+   PRIMARY KEY(code_type_piece)
+);
+
 CREATE TABLE Piece(
    code_piece INT AUTO_INCREMENT,
-   type_piece VARCHAR(50),
-   PRIMARY KEY(code_piece)
+   libelle_piece VARCHAR(50),
+   code_type_piece INT NOT NULL,
+   PRIMARY KEY(code_piece),
+   FOREIGN KEY(code_type_piece) REFERENCES Type_piece(code_type_piece)
 );
+
 
 CREATE TABLE Type_reparation(
    code_type_reparation INT AUTO_INCREMENT,
@@ -99,7 +109,6 @@ CREATE TABLE Utilise(
    code_piece INT,
    code_reparation INT,
    date_utilisation DATE,
-   quantite_utilise INT,
    PRIMARY KEY(code_piece, code_reparation),
    CONSTRAINT fk_utilise_piece
       FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
@@ -147,7 +156,7 @@ VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@gmail.com
       ('DUPONT', 'Martin', '33 avenue des champs Elychgées', '0366662900', 'dupont.dupond@gmail.com');
 
 
-INSERT INTO Piece (type_piece) 
+INSERT INTO Type_piece (libelle_type_piece) 
 VALUES ('Roue'),
       ('Chaine'),
       ('Boulon'),
@@ -156,6 +165,22 @@ VALUES ('Roue'),
       ('Frein'),
       ('Batterie'),
       ('Moteur');
+
+
+INSERT INTO Piece (libelle_piece, code_type_piece) 
+VALUES ('roue1', 1),
+      ('roue2', 1),
+      ('Boulon1', 3),
+      ('Boulon2', 3),
+      ('Frein1', 6),
+      ('Frein2', 6),
+      ('Frein3', 6),
+      ('Frein4', 6),
+      ('Pédale1', 4),
+      ('Pédale2', 4),
+      ('Chaine1', 2),
+      ('Batterie1', 7);
+      
 
 
 INSERT INTO Type_reparation (libelle_type_reparation) 
@@ -206,16 +231,34 @@ VALUES (4, 2, 1, '2022-05-25', 1, 5.00),
       (4, 3, 2, '2025-04-01', 544, 5800.00);
 
 
-INSERT INTO Utilise (code_piece, code_reparation, date_utilisation, quantite_utilise) 
-VALUES (4, 1, '2022-01-01', 2),
-      (5, 2, '2022-02-02', 1),
-      (6, 3, '2023-03-03', 2),
-      (7, 4, '2024-04-04', 1);
+INSERT INTO Utilise (code_piece, code_reparation, date_utilisation) 
+VALUES (9, 1, '2022-01-01'),
+      (10, 1, '2022-01-01'),
+      (5, 3, '2023-03-03'),
+      (12, 4, '2024-04-04');
+
+
+      INSERT INTO Piece (libelle_piece, code_type_piece) 
+VALUES ('roue1', 1),
+      ('roue2', 1),
+      ('Boulon1', 3),
+      ('Boulon2', 3),
+      ('Frein1', 6),
+      ('Frein2', 6),
+      ('Frein3', 6),
+      ('Frein4', 6),
+      ('Pédale1', 4),
+      ('Pédale2', 4),
+      ('Chaine1', 2),
+      ('Batterie1', 7);
 
 
 -- Requête
 SELECT * 
 FROM Individu;
+
+SELECT * 
+FROM Type_piece;
 
 SELECT * 
 FROM Piece;
@@ -263,10 +306,21 @@ ORDER BY nombre_de_location DESC, prix_total DESC;
 SELECT ROUND(AVG(prix_location), 2) AS prix_moyen_par_location
 FROM Loue;
 
-
+/*
 SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Piece.type_piece, Utilise.quantite_utilise, Reparation.description_reparation
 FROM Utilise
 JOIN Reparation ON Reparation.code_reparation = Utilise.code_reparation
 JOIN Piece ON Piece.code_piece = Utilise.code_piece
 JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
 JOIN Velo ON Velo.code_velo = Reparation.code_velo;
+*/
+
+SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Type_piece.libelle_type_piece, COUNT(Piece.code_piece) AS quantite, Reparation.description_reparation
+FROM Utilise
+JOIN Reparation ON Reparation.code_reparation = Utilise.code_reparation
+JOIN Piece ON Piece.code_piece = Utilise.code_piece
+JOIN Type_piece ON Type_piece.code_type_piece = Piece.code_type_piece
+JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
+JOIN Velo ON Velo.code_velo = Reparation.code_velo
+GROUP BY Type_piece.libelle_type_piece, Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Reparation.description_reparation
+ORDER BY quantite DESC;
