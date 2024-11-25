@@ -1,3 +1,9 @@
+-- SAE1.03-1.04
+-- Groupe S1C2
+-- Groupe SAE 22
+--
+-- SANDT Timothe - MIGUET Maxime - TALALI Zakaria
+
 DROP TABLE IF EXISTS Utilise;
 DROP TABLE IF EXISTS Location;
 DROP TABLE IF EXISTS Reparation;
