@@ -1,20 +1,13 @@
--- SAE1.03-1.04
--- Groupe S1C2
--- Groupe SAE 22
---
--- SANDT Timothe - MIGUET Maxime - TALALI Zakaria
-
 DROP TABLE IF EXISTS Utilise;
-DROP TABLE IF EXISTS Loue;
+DROP TABLE IF EXISTS Location;
 DROP TABLE IF EXISTS Reparation;
 DROP TABLE IF EXISTS Velo;
+DROP TABLE IF EXISTS Facture;
 DROP TABLE IF EXISTS Categorie_velo;
 DROP TABLE IF EXISTS Etat;
 DROP TABLE IF EXISTS Type_reparation;
 DROP TABLE IF EXISTS Piece;
-DROP TABLE IF EXISTS Type_piece;
 DROP TABLE IF EXISTS Individu;
-
 
 
 CREATE TABLE Individu(
@@ -27,20 +20,12 @@ CREATE TABLE Individu(
    PRIMARY KEY(identifiant_individu)
 );
 
-CREATE TABLE Type_piece(
-   code_type_piece INT AUTO_INCREMENT,
-   libelle_type_piece VARCHAR(50),
-   PRIMARY KEY(code_type_piece)
-);
-
 CREATE TABLE Piece(
    code_piece INT AUTO_INCREMENT,
-   libelle_piece VARCHAR(50),
-   code_type_piece INT NOT NULL,
-   PRIMARY KEY(code_piece),
-   FOREIGN KEY(code_type_piece) REFERENCES Type_piece(code_type_piece)
+   type_piece VARCHAR(50),
+   prix DECIMAL(19,4),
+   PRIMARY KEY(code_piece)
 );
-
 
 CREATE TABLE Type_reparation(
    code_type_reparation INT AUTO_INCREMENT,
@@ -60,16 +45,22 @@ CREATE TABLE Categorie_velo(
    PRIMARY KEY(code_categorie_velo)
 );
 
+CREATE TABLE Facture(
+   id_facture INT AUTO_INCREMENT,
+   prix_total DECIMAL(19,4),
+   PRIMARY KEY(id_facture)
+);
+
 CREATE TABLE Velo(
    code_velo INT AUTO_INCREMENT,
    libelle_velo VARCHAR(50),
+   prix DECIMAL(19,4),
+   date_achat DATE,
    code_categorie_velo INT NOT NULL,
    code_etat INT NOT NULL,
    PRIMARY KEY(code_velo),
-   CONSTRAINT fk_velo_categorie
-      FOREIGN KEY(code_categorie_velo) REFERENCES Categorie_velo(code_categorie_velo),
-   CONSTRAINT fk_velo_etat
-      FOREIGN KEY(code_etat) REFERENCES Etat(code_etat)
+   FOREIGN KEY(code_categorie_velo) REFERENCES Categorie_velo(code_categorie_velo),
+   FOREIGN KEY(code_etat) REFERENCES Etat(code_etat)
 );
 
 CREATE TABLE Reparation(
@@ -77,250 +68,40 @@ CREATE TABLE Reparation(
    date_reparation DATE,
    duree_reparation INT,
    description_reparation TEXT,
+   prix_main_d_oeuvre DECIMAL(19,4),
+   id_facture INT NOT NULL,
    code_type_reparation INT NOT NULL,
    code_velo INT NOT NULL,
    identifiant_individu INT NOT NULL,
    PRIMARY KEY(code_reparation),
-   CONSTRAINT fk_reparation_type
-      FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
-   CONSTRAINT fk_reparation_velo
-      FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
-   CONSTRAINT fk_reparation_individu
-      FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
+   FOREIGN KEY(id_facture) REFERENCES Facture(id_facture),
+   FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
+   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
+   FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
 );
 
-CREATE TABLE Loue(
-   identifiant_individu_bailleur INT,
-   identifiant_individu_locataire INT,
-   code_velo INT,
-   date_debut_location DATE,
-   duree_location INT,
-   prix_location DECIMAL(19,4),
-   PRIMARY KEY(identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, date_debut_location),
-   CONSTRAINT fk_loue_bailleur
-      FOREIGN KEY(identifiant_individu_bailleur) REFERENCES Individu(identifiant_individu),
-   CONSTRAINT fk_loue_locataire
-      FOREIGN KEY(identifiant_individu_locataire) REFERENCES Individu(identifiant_individu),
-   CONSTRAINT fk_loue_velo
-      FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
+CREATE TABLE Location(
+   ID_location INT AUTO_INCREMENT,
+   prix DECIMAL(19,4),
+   duree INT,
+   JJMMAAAA DATE,
+   id_facture INT NOT NULL,
+   locataire INT NOT NULL,
+   bailleur INT NOT NULL,
+   code_velo INT NOT NULL,
+   PRIMARY KEY(ID_location),
+   FOREIGN KEY(id_facture) REFERENCES Facture(id_facture),
+   FOREIGN KEY(locataire) REFERENCES Individu(identifiant_individu),
+   FOREIGN KEY(bailleur) REFERENCES Individu(identifiant_individu),
+   FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
 );
 
 CREATE TABLE Utilise(
    code_piece INT,
    code_reparation INT,
    date_utilisation DATE,
+   quantite INT,
    PRIMARY KEY(code_piece, code_reparation),
-   CONSTRAINT fk_utilise_piece
-      FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
-   CONSTRAINT fk_utilise_reparation
-      FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
+   FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
+   FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
-
-SHOW TABLES;
-
-
--- ----------- --
--- Jeu de Test --
--- ----------- --
-
--- Modification des tables
-
-SHOW CREATE TABLE Utilise;
-
-ALTER TABLE Utilise 
-   DROP FOREIGN KEY fk_utilise_piece;
-SHOW CREATE TABLE Utilise;
-
-ALTER TABLE Utilise
-   ADD FOREIGN KEY(code_piece) REFERENCES Piece(code_piece);
-SHOW CREATE TABLE Utilise;
-
-
-
--- Ajout de donnée suivant l'ordre :
--- Individu;
--- Piece;
--- Type_reparation;
--- Etat;
--- Categorie_velo;
--- Velo;
--- Reparation;
--- Loue;
--- Utilise;
-
-INSERT INTO Individu (nom, prenom, adresse, telephone, email) 
-VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@gmail.com'),
-      ('SANDT', 'Timothe', '11 rue de la paix', '0606060607', 'Z4R5p@gmail.com'),
-      ('MIGUET', 'Maxime', '12 rue de la paix', '0606060608', 'Z4R6p@yahoo.fr'),
-      ('DE CHEZ CARGLASS', 'Olivier', '13 rue de Carglass', '0310051515', 'carglass@carglass.com'),
-      ('DUPONT', 'Martin', '33 avenue des champs Elychgées', '0366662900', 'dupont.dupond@gmail.com');
-
-
-INSERT INTO Type_piece (libelle_type_piece) 
-VALUES ('Roue'),
-      ('Chaine'),
-      ('Boulon'),
-      ('Pédale'),
-      ('Suspension'),
-      ('Frein'),
-      ('Batterie'),
-      ('Moteur');
-
-
-INSERT INTO Piece (libelle_piece, code_type_piece) 
-VALUES ('roue1', 1),
-      ('roue2', 1),
-      ('Boulon1', 3),
-      ('Boulon2', 3),
-      ('Frein1', 6),
-      ('Frein2', 6),
-      ('Frein3', 6),
-      ('Frein4', 6),
-      ('Pédale1', 4),
-      ('Pédale2', 4),
-      ('Chaine1', 2),
-      ('Batterie1', 7);
-      
-
-
-INSERT INTO Type_reparation (libelle_type_reparation) 
-VALUES ('Crevaison'),
-      ('Suspension'),
-      ('Frein'),
-      ('Pédalier'),
-      ('Changement de batterie'),
-      ('Entretien');
-
-
-INSERT INTO Etat (libelle_etat)
-VALUES ('Très mauvais'),
-      ('Mauvais'),
-      ('Moyen'),
-      ('Bon'),
-      ('Très bon'),
-      ('Neuf');
-
-
-INSERT INTO Categorie_velo (libelle_categorie_velo) 
-VALUES ('VTT'),
-      ('MTB'),
-      ('BMX'),
-      ('Vélo éléctrique'),
-      ('Vélo de course'),
-      ('Vélo de ville');
-
-
-INSERT INTO Velo (libelle_velo, code_categorie_velo, code_etat) 
-VALUES ('Jean-pierre bike', 1, 1),
-      ('biket', 2, 3),
-      ('carglass', 6, 5),
-      ('velo', 4, 5);
-
-
-INSERT INTO Reparation (date_reparation, duree_reparation, description_reparation, code_type_reparation, code_velo, identifiant_individu) 
-VALUES ('2022-01-01', 1, NULL, 4, 1, 1),
-      ('2022-02-02', 3, 'description', 2, 2, 2),
-      ('2023-03-03', 1, 'description', 3, 2, 1),
-      ('2024-04-04', 5, 'La batterie était mauvaise, elle a été remplacé', 5, 4, 4);
-
-INSERT INTO Loue (identifiant_individu_bailleur, identifiant_individu_locataire, code_velo, date_debut_location, duree_location, prix_location) 
-VALUES (4, 2, 1, '2022-05-25', 1, 5.00),
-      (4, 1, 4, '2023-03-15', 21, 130.00),
-      (4, 4, 3, '2024-12-21', 31, 1500.00),
-      (3, 2, 2, '2024-12-01', 31, 300.00),
-      (4, 3, 2, '2025-04-01', 544, 5800.00);
-
-
-INSERT INTO Utilise (code_piece, code_reparation, date_utilisation) 
-VALUES (9, 1, '2022-01-01'),
-      (10, 1, '2022-01-01'),
-      (5, 3, '2023-03-03'),
-      (12, 4, '2024-04-04');
-
-
-      INSERT INTO Piece (libelle_piece, code_type_piece) 
-VALUES ('roue1', 1),
-      ('roue2', 1),
-      ('Boulon1', 3),
-      ('Boulon2', 3),
-      ('Frein1', 6),
-      ('Frein2', 6),
-      ('Frein3', 6),
-      ('Frein4', 6),
-      ('Pédale1', 4),
-      ('Pédale2', 4),
-      ('Chaine1', 2),
-      ('Batterie1', 7);
-
-
--- Requête
-SELECT * 
-FROM Individu;
-
-SELECT * 
-FROM Type_piece;
-
-SELECT * 
-FROM Piece;
-
-SELECT * 
-FROM Type_reparation;
-
-SELECT * 
-FROM Etat;
-
-SELECT * 
-FROM Categorie_velo;
-
-SELECT * 
-FROM Velo;
-
-SELECT * 
-FROM Reparation;
-
-SELECT * 
-FROM Loue;
-
-SELECT * 
-FROM Utilise;
-
-
-
-SELECT Individu.prenom, Individu.nom, Velo.libelle_velo, Categorie_velo.libelle_categorie_velo, Loue.prix_location, Etat.libelle_etat, Loue.duree_location, Loue.date_debut_location
-FROM Loue 
-JOIN Individu ON Individu.identifiant_individu = Loue.identifiant_individu_locataire
-JOIN Velo ON Velo.code_velo = Loue.code_velo
-JOIN Etat ON Etat.code_etat = Velo.code_etat
-JOIN Categorie_velo ON Categorie_velo.code_categorie_velo = Velo.code_categorie_velo
-WHERE prix_location > 100
-ORDER BY prix_location DESC, nom, prenom;
-
-
-SELECT CONCAT(Individu.prenom, ' ', Individu.nom) AS locataire, COUNT(identifiant_individu_locataire) AS nombre_de_location, SUM(Loue.prix_location) AS prix_total
-FROM Individu
-LEFT JOIN Loue ON Individu.identifiant_individu = Loue.identifiant_individu_locataire
-GROUP BY Individu.prenom, Individu.nom
-ORDER BY nombre_de_location DESC, prix_total DESC;
-
-
-SELECT ROUND(AVG(prix_location), 2) AS prix_moyen_par_location
-FROM Loue;
-
-/*
-SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Piece.type_piece, Utilise.quantite_utilise, Reparation.description_reparation
-FROM Utilise
-JOIN Reparation ON Reparation.code_reparation = Utilise.code_reparation
-JOIN Piece ON Piece.code_piece = Utilise.code_piece
-JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
-JOIN Velo ON Velo.code_velo = Reparation.code_velo;
-*/
-
-SELECT Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Type_piece.libelle_type_piece, COUNT(Piece.code_piece) AS quantite, Reparation.description_reparation
-FROM Utilise
-JOIN Reparation ON Reparation.code_reparation = Utilise.code_reparation
-JOIN Piece ON Piece.code_piece = Utilise.code_piece
-JOIN Type_piece ON Type_piece.code_type_piece = Piece.code_type_piece
-JOIN Type_reparation ON Type_reparation.code_type_reparation = Reparation.code_type_reparation
-JOIN Velo ON Velo.code_velo = Reparation.code_velo
-GROUP BY Type_piece.libelle_type_piece, Reparation.code_reparation, Velo.libelle_velo, Type_reparation.libelle_type_reparation, Reparation.description_reparation
-ORDER BY quantite DESC;
