@@ -76,6 +76,26 @@ def show_accueil():
     return render_template('layout.html')
 
 
+@app.route('/location/show')
+def show_location():
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Location.ID_location AS ID, Location.prix, Location.JJMMAAAA AS date, 
+                Velo.libelle_velo AS velo, 
+                CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
+                CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
+                FROM Location
+                JOIN Velo ON Location.code_velo = Velo.code_velo
+                JOIN Individu AS loc ON Location.locataire = loc.identifiant_individu
+                JOIN Individu AS bai ON Location.bailleur = bai.identifiant_individu
+                ORDER BY JJMMAAAA;   
+            '''
+    mycursor.execute(sql)
+
+    locations = mycursor.fetchall()
+    return render_template('location/show_location.html', locations=locations)
+
+
+
 
 if __name__ == '__main__':
     app.run()

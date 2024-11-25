@@ -10,5 +10,6 @@ pip install -r requirements.txt
 ## Start
 ```
 source venv/bin/activate
-./www/launch.sh [port]
+cd www
+./launch.sh [port]
 ```

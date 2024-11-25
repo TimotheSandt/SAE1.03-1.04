@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Location
+{% endblock %}
+
+
+{% block body %}
+
+
+<h3>Location</h3>
+<a href="/location/add">ajouter une location</a>
+<br><br>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>id</th>
+            <th>prix</th>
+            <th>date</th>
+            <th>velo</th>
+            <th>locataire</th>
+            <th>bailleur</th>          
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+    {% if hotels | length >= 1 %}
+        {% for ligne in hotels %}
+           <tr>
+                  <td>{{ ligne.ID }}</td>
+                  <td>{{ ligne.prix }}</td>
+                  <td>{{ ligne.date }}</td>
+                  <td>{{ ligne.velo }}</td>
+                  <td>{{ ligne.locataire }}</td>
+                  <td>{{ ligne.bailleur }}</td>
+                  <td>{{ ligne.station_id }}</td>
+                  <td>
+                      <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
+                      <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
+                  </td>
+           </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                  <td>
+                      Aucune location effectuée
+                  </td>
+           </tr>
+    {% endif %}
+    </tbody>
+</table>
+{% endblock %}
