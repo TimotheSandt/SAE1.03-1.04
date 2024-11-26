@@ -7,7 +7,7 @@ source venv/bin/activate
 pip install -r requirements.txt 
 ```
 
-changer le fichier .env avec vos informaions de conection mysql
+Changer le fichier .env avec vos informations de connection mysql
 
 ## Start
 ```
