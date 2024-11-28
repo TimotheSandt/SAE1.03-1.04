@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Compte
+{% endblock %}
+
+
+{% block body %}
+
+
+<h3>Creer un compte</h3>
+
+<form action="/compte/add" method="POST">
+
+
+    <label for="nom">Nom : </label>
+    <input type="text" name="nom" id="nom" required>
+
+    <label for="prenom">Prénom : </label>
+    <input type="text" name="prénom" id="prenom" required>
+
+    <label for="adresse">Adresse : </label>
+    <input type="text" name="adresse" id="adresse" required>
+
+    <label for="telephone">Téléphone : </label>
+    <input type="text" name="telephone" id="telephone" required>
+
+    <label for="email">Email : </label>
+    <input type="text" name="email" id="email" required>
+
+
+    <button type="submit">Creer un compte</button>
+    
+</form>
+
+{% endblock %}

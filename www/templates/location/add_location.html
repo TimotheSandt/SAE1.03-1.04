@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Location
+{% endblock %}
+
+
+{% block body %}
+
+
+<h3>Ajouter une Location</h3>
+
+<form action="/location/add" method="POST">
+
+
+    <label for="prix">Prix : </label>
+    <input type="number" name="prix" id="prix" step="0.01" required>
+
+    <label for="date">Date début location : </label>
+    <input type="date" name="date" id="date" required>
+
+    <label for="duree">Durée : </label>
+    <input type="number" name="duree" id="duree" required>
+
+
+
+    <label for="locataire">Locataire : </label>
+    <select name="locataire" id="locataire" required>
+        {% for individu in individus %}
+            <option value="{{ individu.ID }}">{{ individu.nom_prenom }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="bailleur">Bailleur : </label>
+    <select name="bailleur" id="bailleur" required>
+        {% for individu in individus %}
+            <option value="{{ individu.ID }}">{{ individu.nom_prenom }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="velo">Velo : </label>
+    <select name="velo" id="velo" required>
+        {% for velo in velos %}
+            <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
+        {% endfor %}
+    </select>
+
+
+    <button type="submit">Ajouter Location</button>
+    
+</form>
+
+<a href="/location/show">Retour</a>
+{% endblock %}
