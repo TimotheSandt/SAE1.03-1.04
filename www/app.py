@@ -235,7 +235,7 @@ def show_reparation():
                        reparation.description_reparation AS description,
                        reparation.prix_main_d_oeuvre AS prix, 
                        reparation.id_facture AS facture,
-                       type_reparation.libelle_type_reparation AS type_reparation,
+                       Type_reparation.libelle_type_reparation AS type_reparation,
                        Velo.libelle_velo AS velo,
                        Individu.nom AS individu
                 FROM reparation
