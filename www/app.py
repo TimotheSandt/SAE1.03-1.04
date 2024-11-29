@@ -168,7 +168,7 @@ def edit_location():
                 FROM Location
                 WHERE ID = %s;
             '''
-    values = (id,)
+    values = (id)
     mycursor.execute(sql, values)
     location = mycursor.fetchone()
     
@@ -208,6 +208,18 @@ def valid_edit_location():
                 WHERE ID_location = %s;
             '''
     values = (prix, date, duree, locataire, bailleur, velo, id)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect(url_for('show_location'))
+
+@app.route('/location/delete', methods=['POST'])
+def delete_location():
+    id = request.form['id']
+    mycursor = get_db().cursor()
+    sql =   ''' DELETE FROM Location
+                WHERE ID_location = %s;
+            '''
+    values = (id)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
