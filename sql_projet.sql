@@ -17,13 +17,13 @@ DROP TABLE IF EXISTS Individu;
 
 
 CREATE TABLE Individu(
-   identifiant_individu INT AUTO_INCREMENT,
+   id_individu INT AUTO_INCREMENT,
    nom VARCHAR(50),
    prenom VARCHAR(50),
    adresse VARCHAR(255),
    telephone VARCHAR(10),
    email VARCHAR(50),
-   PRIMARY KEY(identifiant_individu)
+   PRIMARY KEY(id_individu)
 );
 
 CREATE TABLE Piece(
@@ -78,12 +78,12 @@ CREATE TABLE Reparation(
    id_facture INT NOT NULL,
    code_type_reparation INT NOT NULL,
    code_velo INT NOT NULL,
-   identifiant_individu INT NOT NULL,
+   id_individu INT NOT NULL,
    PRIMARY KEY(code_reparation),
    FOREIGN KEY(id_facture) REFERENCES Facture(id_facture),
    FOREIGN KEY(code_type_reparation) REFERENCES Type_reparation(code_type_reparation),
    FOREIGN KEY(code_velo) REFERENCES Velo(code_velo),
-   FOREIGN KEY(identifiant_individu) REFERENCES Individu(identifiant_individu)
+   FOREIGN KEY(id_individu) REFERENCES Individu(id_individu)
 );
 
 CREATE TABLE Location(
@@ -97,8 +97,8 @@ CREATE TABLE Location(
    code_velo INT NOT NULL,
    PRIMARY KEY(ID_location),
    FOREIGN KEY(id_facture) REFERENCES Facture(id_facture),
-   FOREIGN KEY(locataire) REFERENCES Individu(identifiant_individu),
-   FOREIGN KEY(bailleur) REFERENCES Individu(identifiant_individu),
+   FOREIGN KEY(locataire) REFERENCES Individu(id_individu),
+   FOREIGN KEY(bailleur) REFERENCES Individu(id_individu),
    FOREIGN KEY(code_velo) REFERENCES Velo(code_velo)
 );
 

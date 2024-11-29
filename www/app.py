@@ -110,8 +110,8 @@ def show_location():
                 CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
                 FROM Location
                 JOIN Velo ON Location.code_velo = Velo.code_velo
-                JOIN Individu AS loc ON Location.locataire = loc.identifiant_individu
-                JOIN Individu AS bai ON Location.bailleur = bai.identifiant_individu
+                JOIN Individu AS loc ON Location.locataire = loc.id_individu
+                JOIN Individu AS bai ON Location.bailleur = bai.id_individu
                 ORDER BY JJMMAAAA;   
             '''
     mycursor.execute(sql)
@@ -130,7 +130,7 @@ def add_location():
     mycursor.execute(sql)
     velos = mycursor.fetchall()
     
-    sql =   ''' SELECT identifiant_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
+    sql =   ''' SELECT id_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
                 FROM Individu;
             '''
     mycursor.execute(sql)
@@ -182,7 +182,7 @@ def edit_location():
     velos = mycursor.fetchall()
     
     # recherche des individus
-    sql =   ''' SELECT identifiant_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
+    sql =   ''' SELECT id_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
                 FROM Individu
                 ORDER BY nom_prenom;
             '''
@@ -214,11 +214,36 @@ def valid_edit_location():
 
 ########### Reparation ###########
 
+@app.route('/reparation/show', methods=['GET'])
+def show_reparation():
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT reparation.code_reparation AS id, 
+                       reparation.date_reparation AS date, 
+                       reparation.duree_reparation AS duree,
+                       reparation.description_reparation AS description,
+                       reparation.prix_main_d_oeuvre AS prix, 
+                       reparation.id_facture AS facture,
+                       type_reparation.libelle_type_reparation AS type_reparation,
+                       Velo.libelle_velo AS velo,
+                       Individu.nom AS individu
+                FROM reparation
+                JOIN Velo ON reparation.code_velo = Velo.code_velo
+                JOIN Individu ON reparation.id_individu = loc.id_individu
+                JOIN type_reparation ON reparation.code_type_reparation = type_reparation.code_type_reparation
+                ORDER BY date;   
+            '''
+    
+    mycursor.execute(sql)
 
-
+    reparations = mycursor.fetchall()
+    return render_template('reparation/show_reparation.html', reparations=reparations)
 
 ########### Velo ###########
 
+
+
+
+#####################
 
 if __name__ == '__main__':
     app.run()
