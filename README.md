@@ -9,10 +9,10 @@ pip install -r requirements.txt
 
 Créer le fichier .env avec vos informations de connection mysql
 ```
-DB_HOST=localhost
-DB_USER=tsandt
-DB_PASSWORD=34mopGr
-DB_NAME=SAE
+DB_HOST=host
+DB_USER=login
+DB_PASSWORD=motdepasse
+DB_NAME=BDD
 ```
 
 ## Start

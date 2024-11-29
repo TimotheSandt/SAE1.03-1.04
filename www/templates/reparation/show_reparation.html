@@ -8,5 +8,49 @@ Réparation
 {% block body %}
 
 
+<h3>Réparation</h3>
+<a href="/reparation/add">Ajouter une Réparation</a>
+<br><br>
 
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>id</th>
+            <th>prix_main_d'oeuvre</th>
+            <th>date</th>
+            <th>velo</th>
+            <th>individu</th>          
+            <th>description</th>
+            <th>type_reparation</th>
+            <th>id_facture</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if reparations | length >= 1 %}
+        {% for ligne in reparations %}
+           <tr>
+                  <td>{{ ligne.id }}</td>
+                  <td>{{ ligne.prix_main_d'oeuvre }}</td>
+                  <td>{{ ligne.date }}</td>
+                  <td>{{ ligne.velo }}</td>
+                  <td>{{ ligne.individu }}</td>
+                  <td>{{ ligne.description }}</td>
+                  <td>{{ ligne.type_reparation }}</td>
+                  <td>{{ ligne.id_facture }}</td>
+                  <td>
+                      <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
+                      <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
+                  </td>
+           </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                  <td>
+                      Aucune réparation effectuée
+                  </td>
+           </tr>
+    {% endif %}
+    </tbody>
+</table>
 {% endblock %}

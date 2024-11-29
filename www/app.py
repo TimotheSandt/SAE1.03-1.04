@@ -75,6 +75,7 @@ def activate_db_options(db):
 def show_accueil():
     return render_template('layout.html')
 
+########### Individu ###########
 
 @app.route('/compte/add', methods=['GET'])
 def add_individu():
@@ -98,6 +99,7 @@ def valid_add_individu():
     get_db().commit()
     return redirect('/')
 
+########### Location ###########
 
 @app.route('/location/show', methods=['GET'])
 def show_location():
@@ -209,6 +211,13 @@ def valid_edit_location():
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
+
+########### Reparation ###########
+
+
+
+
+########### Velo ###########
 
 
 if __name__ == '__main__':
