@@ -90,7 +90,7 @@ CREATE TABLE Location(
    ID_location INT AUTO_INCREMENT,
    prix DECIMAL(19,4),
    duree INT,
-   JJMMAAAA DATE,
+   date_location DATE,
    id_facture INT NOT NULL,
    locataire INT NOT NULL,
    bailleur INT NOT NULL,
