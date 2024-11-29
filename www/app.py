@@ -229,19 +229,19 @@ def delete_location():
 @app.route('/reparation/show', methods=['GET'])
 def show_reparation():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT reparation.code_reparation AS id, 
-                       reparation.date_reparation AS date, 
-                       reparation.duree_reparation AS duree,
-                       reparation.description_reparation AS description,
-                       reparation.prix_main_d_oeuvre AS prix, 
-                       reparation.id_facture AS facture,
+    sql =   ''' SELECT Reparation.code_reparation AS id, 
+                       Reparation.date_reparation AS date, 
+                       Reparation.duree_reparation AS duree,
+                       Reparation.description_reparation AS description,
+                       Reparation.prix_main_d_oeuvre AS prix, 
+                       Reparation.id_facture AS facture,
                        Type_reparation.libelle_type_reparation AS type_reparation,
                        Velo.libelle_velo AS velo,
                        Individu.nom AS individu
-                FROM reparation
-                JOIN Velo ON reparation.code_velo = Velo.code_velo
-                JOIN Individu ON reparation.id_individu = loc.id_individu
-                JOIN type_reparation ON reparation.code_type_reparation = type_reparation.code_type_reparation
+                FROM Reparation
+                JOIN Velo ON Reparation.code_velo = Velo.code_velo
+                JOIN Individu ON Reparation.id_individu = Individu.id_individu
+                JOIN type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
                 ORDER BY date;   
             '''
     
