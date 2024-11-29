@@ -241,7 +241,7 @@ def show_reparation():
                 FROM Reparation
                 JOIN Velo ON Reparation.code_velo = Velo.code_velo
                 JOIN Individu ON Reparation.id_individu = Individu.id_individu
-                JOIN type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
+                JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
                 ORDER BY date;   
             '''
     
