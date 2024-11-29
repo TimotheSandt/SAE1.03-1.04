@@ -104,7 +104,7 @@ def valid_add_individu():
 @app.route('/location/show', methods=['GET'])
 def show_location():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.ID_location AS ID, Location.prix, Location.JJMMAAAA AS date, 
+    sql =   ''' SELECT Location.ID_location AS ID, Location.prix, Location.date_location AS date, 
                 Velo.libelle_velo AS velo, 
                 CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
                 CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
@@ -112,7 +112,7 @@ def show_location():
                 JOIN Velo ON Location.code_velo = Velo.code_velo
                 JOIN Individu AS loc ON Location.locataire = loc.id_individu
                 JOIN Individu AS bai ON Location.bailleur = bai.id_individu
-                ORDER BY JJMMAAAA;   
+                ORDER BY date_location;   
             '''
     mycursor.execute(sql)
 
@@ -149,7 +149,7 @@ def valid_add_location():
     velo = request.form['velo']
     
     mycursor = get_db().cursor()
-    sql =   ''' INSERT INTO Location(prix, JJMMAAAA, duree, locataire, bailleur, code_velo)
+    sql =   ''' INSERT INTO Location(prix, date_location, duree, locataire, bailleur, code_velo)
                 VALUES (%s, %s, %s, %s, %s);
             '''
     values = (prix, date, duree, locataire, bailleur, velo)
@@ -164,11 +164,11 @@ def edit_location():
     # recherche de la location
     id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql =   ''' SELECT ID_location AS ID, prix, JJMMAAAA AS date, duree, locataire, bailleur, code_velo
+    sql =   ''' SELECT ID_location AS ID, prix, date_location AS date, duree, locataire, bailleur, code_velo
                 FROM Location
                 WHERE ID = %s;
             '''
-    values = (id,)
+    values = (id)
     mycursor.execute(sql, values)
     location = mycursor.fetchone()
     
@@ -204,10 +204,22 @@ def valid_edit_location():
     
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
-                SET prix = %s, JJMMAAAA = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s
+                SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s
                 WHERE ID_location = %s;
             '''
     values = (prix, date, duree, locataire, bailleur, velo, id)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect(url_for('show_location'))
+
+@app.route('/location/delete', methods=['POST'])
+def delete_location():
+    id = request.form['id']
+    mycursor = get_db().cursor()
+    sql =   ''' DELETE FROM Location
+                WHERE ID_location = %s;
+            '''
+    values = (id)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
