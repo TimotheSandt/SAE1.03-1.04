@@ -234,7 +234,7 @@ def valid_edit_location():
 
 @app.route('/location/delete', methods=['GET'])
 def delete_location():
-    id = request.form['id']
+    id = request.args.get('id')
     mycursor = get_db().cursor()
     sql =   ''' DELETE FROM Location
                 WHERE ID_location = %s;
