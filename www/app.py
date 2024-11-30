@@ -151,7 +151,7 @@ def valid_add_location():
     
     mycursor = get_db().cursor()
     
-    sql =   ''' INSERT INTO Facture(prix)
+    sql =   ''' INSERT INTO Facture(prix_total)
                 VALUES (%s);
             '''
     values = (prix,)
