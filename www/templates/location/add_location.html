@@ -26,20 +26,23 @@ Location
 
     <label for="locataire">Locataire : </label>
     <select name="locataire" id="locataire" required>
+        <option value="" selected disabled hidden>Choisissez un locataire</option>
         {% for individu in individus %}
-            <option value="{{ individu.ID }}">{{ individu.nom_prenom }}</option>
+            <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
         {% endfor %}
     </select>
     
     <label for="bailleur">Bailleur : </label>
     <select name="bailleur" id="bailleur" required>
+        <option value="" selected disabled hidden>Choisissez un bailleur</option>
         {% for individu in individus %}
-            <option value="{{ individu.ID }}">{{ individu.nom_prenom }}</option>
+            <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
         {% endfor %}
     </select>
     
     <label for="velo">Velo : </label>
     <select name="velo" id="velo" required>
+        <option value="" selected disabled hidden>Choisissez un velo</option>
         {% for velo in velos %}
             <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
         {% endfor %}

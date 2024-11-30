@@ -104,7 +104,7 @@ def valid_add_individu():
 @app.route('/location/show', methods=['GET'])
 def show_location():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.ID_location AS ID, Location.prix, Location.date_location AS date, 
+    sql =   ''' SELECT Location.id_location AS id, Location.prix, Location.date_location AS date, 
                 Velo.libelle_velo AS velo, 
                 CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
                 CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
@@ -130,7 +130,7 @@ def add_location():
     mycursor.execute(sql)
     velos = mycursor.fetchall()
     
-    sql =   ''' SELECT id_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
+    sql =   ''' SELECT id_individu AS id, CONCAT(nom, ' ', prenom) AS nom_prenom
                 FROM Individu;
             '''
     mycursor.execute(sql)
@@ -148,6 +148,9 @@ def valid_add_location():
     bailleur = request.form['bailleur']
     velo = request.form['velo']
     
+    
+    ### recherche des conflits de dates
+    mycursor = get_db().cursor()
     sql =   ''' SELECT date_location, duree, code_velo
                 FROM Location
                 WHERE (code_velo = %s) AND 
@@ -167,8 +170,6 @@ def valid_add_location():
     # dn BETWEEN d AND f
     # fn BETWEEN dn AND d
     
-    
-    mycursor = get_db().cursor()
     values = (velo, 
                 date, date, duree,
                 date, date, duree,
@@ -182,6 +183,7 @@ def valid_add_location():
         return redirect(url_for('add_location'))
     
     
+    ### Ajout de la facture
     mycursor = get_db().cursor()
     
     sql =   ''' INSERT INTO Facture(prix_total)
@@ -200,7 +202,8 @@ def valid_add_location():
     mycursor.execute(sql)
     id_facture = mycursor.fetchone()['id_facture']
     
-    
+    ### Ajout de la location
+    mycursor = get_db().cursor()
     sql =   ''' INSERT INTO Location(prix, date_location, duree, locataire, bailleur, code_velo, id_facture)
                 VALUES (%s, %s, %s, %s, %s, %s, %s);
             '''
@@ -216,9 +219,9 @@ def edit_location():
     # recherche de la location
     id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql =   ''' SELECT ID_location AS ID, prix, date_location AS date, duree, locataire, bailleur, code_velo, id_facture
+    sql =   ''' SELECT id_location AS id, prix, date_location AS date, duree, locataire, bailleur, code_velo, id_facture
                 FROM Location
-                WHERE ID_location = %s;
+                WHERE id_location = %s;
             '''
     values = (id,)
     mycursor.execute(sql, values)
@@ -234,7 +237,7 @@ def edit_location():
     velos = mycursor.fetchall()
     
     # recherche des individus
-    sql =   ''' SELECT id_individu AS ID, CONCAT(nom, ' ', prenom) AS nom_prenom
+    sql =   ''' SELECT id_individu AS id, CONCAT(nom, ' ', prenom) AS nom_prenom
                 FROM Individu
                 ORDER BY nom_prenom;
             '''
@@ -258,7 +261,7 @@ def valid_edit_location():
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
                 SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s, id_facture = %s
-                WHERE ID_location = %s;
+                WHERE id_location = %s;
             '''
     values = (prix, date, duree, locataire, bailleur, velo, id_facture, id)
     mycursor.execute(sql, values)
@@ -270,7 +273,7 @@ def delete_location():
     id = request.args.get('id')
     mycursor = get_db().cursor()
     sql =   ''' DELETE FROM Location
-                WHERE ID_location = %s;
+                WHERE id_location = %s;
             '''
     values = (id)
     mycursor.execute(sql, values)

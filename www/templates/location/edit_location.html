@@ -8,11 +8,11 @@ Location
 {% block body %}
 
 
-<h3>Ajouter une Location</h3>
+<h3>Modifier une Location</h3>
 
 <form action="/location/edit" method="POST">
 
-    <input type="hidden" name="id" value="{{ location.ID }}" id="id" required>
+    <input type="hidden" name="id" value="{{ location.id }}" id="id" required>
     <input type="hidden" name="facture" value="{{ location.id_facture }}" id="facture" required>
 
     <label for="prix">Prix : </label>
@@ -29,8 +29,8 @@ Location
     <label for="locataire">Locataire : </label>
     <select name="locataire" id="locataire" required>
         {% for individu in individus %}
-            <option value="{{ individu.ID }}" 
-                {% if individu.ID == location.locataire %} selected {% endif %}>
+            <option value="{{ individu.id }}" 
+                {% if individu.id == location.locataire %} selected {% endif %}>
                 {{ individu.nom_prenom }}
             </option>
         {% endfor %}
@@ -39,8 +39,8 @@ Location
     <label for="bailleur">Bailleur : </label>
     <select name="bailleur" id="bailleur" required>
         {% for individu in individus %}
-            <option value="{{ individu.ID }}"
-                {% if individu.ID == location.bailleur %} selected {% endif %}>
+            <option value="{{ individu.id }}"
+                {% if individu.id == location.bailleur %} selected {% endif %}>
                 {{ individu.nom_prenom }} 
             </option>
         {% endfor %}
@@ -57,7 +57,7 @@ Location
     </select>
 
 
-    <button type="submit">Ajouter Location</button>
+    <button type="submit">Modifier</button>
     
 </form>
 

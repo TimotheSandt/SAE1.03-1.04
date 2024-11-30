@@ -28,7 +28,7 @@ Location
     {% if locations | length >= 1 %}
         {% for ligne in locations %}
            <tr>
-                  <td>{{ ligne.ID }}</td>
+                  <td>{{ ligne.id }}</td>
                   <td>{{ ligne.prix }}</td>
                   <td>{{ ligne.date }}</td>
                   <td>{{ ligne.velo }}</td>
@@ -36,8 +36,8 @@ Location
                   <td>{{ ligne.bailleur }}</td>
                   <td>{{ ligne.station_id }}</td>
                   <td>
-                      <a href="/location/edit?id={{ ligne.ID }}">editer</a>&nbsp;
-                      <a href="/location/delete?id={{ ligne.ID }}" >supprimer</a>
+                      <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
+                      <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
                   </td>
            </tr>
         {% endfor %}
