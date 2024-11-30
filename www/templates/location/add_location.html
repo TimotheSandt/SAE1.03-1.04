@@ -14,29 +14,39 @@ Location
 
 
     <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" step="0.01" required>
+    <input type="number" name="prix" id="prix" value={{ location.prix }} step="0.01" required>
 
     <label for="date">Date début location : </label>
-    <input type="date" name="date" id="date" required>
+    <input type="date" name="date" id="date" value={{ location.date }} required>
 
     <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" required>
+    <input type="number" name="duree" id="duree" value={{ location.duree }} required>
 
 
 
     <label for="locataire">Locataire : </label>
     <select name="locataire" id="locataire" required>
-        <option value="" selected disabled hidden>Choisissez un locataire</option>
+        {% if location.locataire == None %}
+            <option value="" selected disabled hidden>Choisissez un locataire</option>
+        {% endif %}
         {% for individu in individus %}
-            <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
+            <option value="{{ individu.id }}"
+                {% if location.locataire == individu.id %} selected {% endif %}>
+                {{ individu.nom_prenom }}
+            </option>
         {% endfor %}
     </select>
     
     <label for="bailleur">Bailleur : </label>
     <select name="bailleur" id="bailleur" required>
-        <option value="" selected disabled hidden>Choisissez un bailleur</option>
+        {% if location.bailleur == None %}
+            <option value="" selected disabled hidden>Choisissez un bailleur</option>
+        {% endif %}
         {% for individu in individus %}
-            <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
+            <option value="{{ individu.id }}"
+                {% if location.bailleur == individu.id %} selected {% endif %}>
+                {{ individu.nom_prenom }}
+            </option>
         {% endfor %}
     </select>
     
@@ -44,7 +54,9 @@ Location
     <select name="velo" id="velo" required>
         <option value="" selected disabled hidden>Choisissez un velo</option>
         {% for velo in velos %}
-            <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
+            <option value="{{ velo.code_velo }}">
+                {{ velo.libelle_velo }}
+            </option>
         {% endfor %}
     </select>
 

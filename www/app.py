@@ -120,8 +120,17 @@ def show_location():
     return render_template('location/show_location.html', locations=locations)
 
 
-@app.route('/location/add', methods=['GET'])
-def add_location():
+
+def render_add_location(prix = None, date = None, duree = None, locataire = None, bailleur = None, velo = None):
+    location = {
+        'prix': prix,
+        'date': date,
+        'duree': duree,
+        'locataire': locataire,
+        'bailleur': bailleur,
+        'code_velo': velo
+    }
+    
     mycursor = get_db().cursor()
     sql =   ''' SELECT code_velo, libelle_velo
                 FROM Velo
@@ -136,22 +145,17 @@ def add_location():
     mycursor.execute(sql)
     individus = mycursor.fetchall()
     
-    return render_template('location/add_location.html', velos=velos, individus=individus)
+    return render_template('location/add_location.html', velos=velos, individus=individus, location=location)
+
+@app.route('/location/add', methods=['GET'])
+def add_location():
+    return render_add_location()
 
 
-@app.route('/location/add', methods=['POST'])
-def valid_add_location():
-    prix = request.form['prix']
-    date = request.form['date']
-    duree = request.form['duree']
-    locataire = request.form['locataire']
-    bailleur = request.form['bailleur']
-    velo = request.form['velo']
-    
-    
+def check_date_conflict(velo, date, duree):
     ### recherche des conflits de dates
     mycursor = get_db().cursor()
-    sql =   ''' SELECT date_location, duree, code_velo
+    sql =   ''' SELECT id_location
                 FROM Location
                 WHERE (code_velo = %s) AND 
                         (
@@ -178,9 +182,24 @@ def valid_add_location():
             )
     mycursor.execute(sql, values)
     location = mycursor.fetchall()
-    if len(location) != 0:
+    has_conflict = len(location) != 0
+    return has_conflict
+
+@app.route('/location/add', methods=['POST'])
+def valid_add_location():
+    prix = request.form['prix']
+    date = request.form['date']
+    duree = request.form['duree']
+    locataire = request.form['locataire']
+    bailleur = request.form['bailleur']
+    velo = request.form['velo']
+    
+    
+    
+    
+    if check_date_conflict(velo, date, duree):
         flash("Vélo indisponible durant la location", "danger")
-        return redirect(url_for('add_location'))
+        return render_add_location(prix, date, duree, locataire, bailleur, velo)
     
     
     ### Ajout de la facture
