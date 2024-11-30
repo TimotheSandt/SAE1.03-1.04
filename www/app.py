@@ -104,10 +104,12 @@ def valid_add_individu():
 @app.route('/location/show', methods=['GET'])
 def show_location():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.id_location AS id, Location.prix, Location.date_location AS date, 
-                Velo.libelle_velo AS velo, 
-                CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
-                CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
+    sql =   ''' SELECT Location.id_location AS id, Location.prix, 
+                    Location.date_location AS date_debut, 
+                    DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
+                    Velo.libelle_velo AS velo, 
+                    CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
+                    CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
                 FROM Location
                 JOIN Velo ON Location.code_velo = Velo.code_velo
                 JOIN Individu AS loc ON Location.locataire = loc.id_individu
