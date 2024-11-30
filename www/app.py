@@ -303,6 +303,9 @@ def show_reparation():
     reparations = mycursor.fetchall()
     return render_template('reparation/show_reparation.html', reparations=reparations)
 
+
+
+
 ########### Velo ###########
 
 @app.route('/velo/show', methods=['GET'])
