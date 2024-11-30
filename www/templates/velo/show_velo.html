@@ -1,12 +1,42 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Vélo
+Liste des Vélos
 {% endblock %}
 
-
 {% block body %}
-
-
-
+<h3>Liste des Vélos</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Libellé</th>
+            <th>Prix</th>
+            <th>Date Achat</th>
+            <th>Catégorie</th>
+            <th>État</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for velo in velos %}
+        <tr>
+            <td>{{ velo.ID }}</td>
+            <td>{{ velo.libelle_velo }}</td>
+            <td>{{ velo.prix }}</td>
+            <td>{{ velo.date_achat }}</td>
+            <td>{{ velo.categorie }}</td>
+            <td>{{ velo.etat }}</td>
+            <td>
+                <a href="/velo/edit?id={{ velo.ID }}">Modifier</a>
+                <form action="/velo/delete" method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="{{ velo.ID }}">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="/velo/add">Ajouter un Vélo</a>
 {% endblock %}
