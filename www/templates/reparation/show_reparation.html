@@ -31,13 +31,14 @@ Réparation
         {% for ligne in reparations %}
            <tr>
                   <td>{{ ligne.id }}</td>
-                  <td>{{ ligne.prix_main_d'oeuvre }}</td>
                   <td>{{ ligne.date }}</td>
+                  <td>{{ ligne.duree }}</td>
+                  <td>{{ ligne.description }}</td>
+                  <td>{{ ligne.prix }}</td>
+                  <td>{{ ligne.facture }}</td>
+                  <td>{{ ligne.type_reparation }}</td>
                   <td>{{ ligne.velo }}</td>
                   <td>{{ ligne.individu }}</td>
-                  <td>{{ ligne.description }}</td>
-                  <td>{{ ligne.type_reparation }}</td>
-                  <td>{{ ligne.id_facture }}</td>
                   <td>
                       <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
                       <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
