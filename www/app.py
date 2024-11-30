@@ -112,7 +112,7 @@ def show_location():
                 JOIN Velo ON Location.code_velo = Velo.code_velo
                 JOIN Individu AS loc ON Location.locataire = loc.id_individu
                 JOIN Individu AS bai ON Location.bailleur = bai.id_individu
-                ORDER BY date_location;   
+                ORDER BY date_location;
             '''
     mycursor.execute(sql)
 
@@ -147,6 +147,39 @@ def valid_add_location():
     locataire = request.form['locataire']
     bailleur = request.form['bailleur']
     velo = request.form['velo']
+    
+    sql =   ''' SELECT date_location, duree, code_velo
+                FROM Location
+                WHERE (code_velo = %s) AND 
+                        (
+                            ( date_location BETWEEN %s AND DATE_ADD(%s, INTERVAL %s DAY) ) OR
+                            ( DATE_ADD(date_location, INTERVAL duree DAY) BETWEEN %s AND DATE_ADD(%s, INTERVAL %s DAY) ) OR
+                            ( %s BETWEEN date_location AND DATE_ADD(date_location, INTERVAL duree DAY) ) OR
+                            ( DATE_ADD(%s, INTERVAL %s DAY) BETWEEN date_location AND DATE_ADD(date_location, INTERVAL duree DAY) )
+                        );
+            '''
+    # dn = debut nouvelle location, fn = fin nouvelle location, d = debut location, f = fin location
+    #
+    # Condition de conflit
+    #
+    # f BETWEEN dn AND fn
+    # d BETWEEN dn AND fn
+    # dn BETWEEN d AND f
+    # fn BETWEEN dn AND d
+    
+    
+    mycursor = get_db().cursor()
+    values = (velo, 
+                date, date, duree,
+                date, date, duree,
+                date, 
+                date, duree
+            )
+    mycursor.execute(sql, values)
+    location = mycursor.fetchall()
+    if len(location) != 0:
+        flash("Vélo indisponible durant la location", "danger")
+        return redirect(url_for('add_location'))
     
     
     mycursor = get_db().cursor()
