@@ -15,14 +15,15 @@ Réparation
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th>id</th>
-            <th>prix_main_d'oeuvre</th>
-            <th>date</th>
-            <th>velo</th>
-            <th>individu</th>          
-            <th>description</th>
-            <th>type_reparation</th>
-            <th>id_facture</th>
+            <th>ID</th>
+            <th>Type de réparation</th>
+            <th>Date</th>
+            <th>Durée</th>
+            <th>Prix main d'oeuvre</th>
+            <th>Facture</th>
+            <th>Vélo</th>
+            <th>Individu</th>
+            <th>Description</th>
             <th></th>
         </tr>
     </thead>
@@ -31,17 +32,17 @@ Réparation
         {% for ligne in reparations %}
            <tr>
                   <td>{{ ligne.id }}</td>
+                  <td>{{ ligne.type_reparation }}</td>
                   <td>{{ ligne.date }}</td>
                   <td>{{ ligne.duree }}</td>
-                  <td>{{ ligne.description }}</td>
                   <td>{{ ligne.prix }}</td>
                   <td>{{ ligne.facture }}</td>
-                  <td>{{ ligne.type_reparation }}</td>
                   <td>{{ ligne.velo }}</td>
                   <td>{{ ligne.individu }}</td>
+                  <td>{{ ligne.description }}</td>
                   <td>
-                      <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
-                      <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
+                      <a href="/location/edit?id={{ ligne.id }}">Éditer</a>&nbsp;
+                      <a href="/location/delete?id={{ ligne.id }}" >Supprimer</a>
                   </td>
            </tr>
         {% endfor %}
