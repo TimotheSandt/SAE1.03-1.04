@@ -148,11 +148,30 @@ def valid_add_location():
     bailleur = request.form['bailleur']
     velo = request.form['velo']
     
+    
     mycursor = get_db().cursor()
-    sql =   ''' INSERT INTO Location(prix, date_location, duree, locataire, bailleur, code_velo)
-                VALUES (%s, %s, %s, %s, %s);
+    
+    sql =   ''' INSERT INTO Facture(prix)
+                VALUES (%s);
             '''
-    values = (prix, date, duree, locataire, bailleur, velo)
+    values = (prix,)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT id_facture
+                FROM Facture
+                ORDER BY id_facture DESC
+                LIMIT 1;
+            '''
+    mycursor.execute(sql)
+    id_facture = mycursor.fetchone()['id_facture']
+    
+    
+    sql =   ''' INSERT INTO Location(prix, date_location, duree, locataire, bailleur, code_velo, id_facture)
+                VALUES (%s, %s, %s, %s, %s, %s, %s);
+            '''
+    values = (prix, date, duree, locataire, bailleur, velo, id_facture)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
@@ -173,7 +192,7 @@ def edit_location():
     location = mycursor.fetchone()
     
     # recherche des velos
-    mycursor = get_db().cursor()
+    # mycursor = get_db().cursor()
     sql =   ''' SELECT code_velo, libelle_velo
                 FROM Velo
                 ORDER BY libelle_velo;
