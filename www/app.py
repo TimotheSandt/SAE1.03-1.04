@@ -277,6 +277,11 @@ def valid_edit_location():
     velo = request.form['velo']
     id_facture = request.form['facture']
     
+    
+    if check_date_conflict(velo, date, duree):
+        flash("Vélo indisponible durant la location", "danger")
+        return redirect(url_for('edit_location', id=id))
+    
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
                 SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s, id_facture = %s
