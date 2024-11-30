@@ -7,30 +7,26 @@ VALUES ('TALALI', 'Zakaria', '10 rue de la paix', '0606060606', 'Z4R4p@gmail.com
       ('DUPONT', 'Martin', '33 avenue des champs Elychgées', '0366662900', 'dupont.dupond@gmail.com');
 
 
-INSERT INTO Type_piece (libelle_type_piece) 
-VALUES ('Roue'),
-      ('Chaine'),
-      ('Boulon'),
-      ('Pédale'),
-      ('Suspension'),
-      ('Frein'),
-      ('Batterie'),
-      ('Moteur');
 
-
-INSERT INTO Piece (libelle_piece, code_type_piece) 
-VALUES ('roue', 1),
-      ('roue', 1),
-      ('Boulon', 3),
-      ('Boulon', 3),
-      ('Frein', 6),
-      ('Frein', 6),
-      ('Frein', 6),
-      ('Frein', 6),
-      ('Pédale', 4),
-      ('Pédale', 4),
-      ('Chaine', 2),
-      ('Batterie', 7);
+INSERT INTO Piece (type_piece, prix) 
+VALUES ('roue', 10.00),
+      ('roue', 10.00),
+      ('roue', 10.00),
+      ('roue', 10.00),
+      ('boulon', 5.00),
+      ('boulon', 5.00),
+      ('boulon', 5.00),
+      ('boulon', 5.00),
+      ('frein', 20.00),
+      ('frein', 20.00),
+      ('frein', 20.00),
+      ('pedale', 15.00),
+      ('pedale', 15.00),
+      ('pedale', 15.00),
+      ('suspension', 50.00),
+      ('suspension', 50.00),
+      ('batterie', 100.00),
+      ('moteur', 200.00);
       
 
 
@@ -68,10 +64,4 @@ VALUES ('Jean-pierre bike', 1, 1),
       ('velo', 4, 5);
 
 
-
-INSERT INTO Utilise (code_piece, code_reparation, date_utilisation) 
-VALUES (9, 1, '2022-01-01'),
-      (10, 1, '2022-01-01'),
-      (5, 3, '2023-03-03'),
-      (12, 4, '2024-04-04');
 

@@ -106,7 +106,6 @@ CREATE TABLE Utilise(
    code_piece INT,
    code_reparation INT,
    date_utilisation DATE,
-   quantite INT,
    PRIMARY KEY(code_piece, code_reparation),
    FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
    FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
