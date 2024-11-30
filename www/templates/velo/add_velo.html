@@ -1,17 +1,18 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Ajouter Vélo
+Ajouter un Vélo
 {% endblock %}
 
 {% block body %}
 <h3>Ajouter un Vélo</h3>
+
 <form action="/velo/add" method="POST">
     <label for="libelle_velo">Libellé :</label>
-    <input type="text" name="libelle_velo" id="libelle_velo" required>
+    <input type="text" name="libelle_velo" id="libelle_velo" maxlength="50" placeholder="Nom du vélo" required>
 
     <label for="prix">Prix :</label>
-    <input type="number" name="prix" id="prix" step="0.01" required>
+    <input type="number" name="prix" id="prix" step="0.01" placeholder="Prix en euros" required>
 
     <label for="date_achat">Date d'achat :</label>
     <input type="date" name="date_achat" id="date_achat" required>
@@ -32,4 +33,6 @@ Ajouter Vélo
 
     <button type="submit">Ajouter</button>
 </form>
+
+<a href="/velo/show">Retour à la liste des vélos</a>
 {% endblock %}

@@ -252,37 +252,33 @@ def show_reparation():
 
 ########### Velo ###########
 
-
-# Afficher les vélos
 @app.route('/velo/show', methods=['GET'])
 def show_velo():
-    mycursor = get_db().cursor(dictionary=True)
-    sql = ''' SELECT Velo.code_velo AS ID, Velo.libelle_velo, Velo.prix, Velo.date_achat, 
-                     Categorie_velo.libelle_categorie_velo AS categorie, Etat.libelle_etat AS etat
-              FROM Velo
-              JOIN Categorie_velo ON Velo.code_categorie_velo = Categorie_velo.code_categorie_velo
-              JOIN Etat ON Velo.code_etat = Etat.code_etat
-              ORDER BY Velo.libelle_velo; 
-          '''
+    mycursor = get_db().cursor()
+    sql = '''
+        SELECT Velo.code_velo AS id, Velo.libelle_velo, Velo.prix, Velo.date_achat,
+               Categorie_velo.libelle_categorie_velo AS categorie,
+               Etat.libelle_etat AS etat
+        FROM Velo
+        JOIN Categorie_velo ON Velo.code_categorie_velo = Categorie_velo.code_categorie_velo
+        JOIN Etat ON Velo.code_etat = Etat.code_etat
+        ORDER BY Velo.libelle_velo;
+    '''
     mycursor.execute(sql)
     velos = mycursor.fetchall()
     return render_template('velo/show_velo.html', velos=velos)
 
-# Ajouter un vélo (GET)
 @app.route('/velo/add', methods=['GET'])
 def add_velo():
-    mycursor = get_db().cursor(dictionary=True)
-    sql = ''' SELECT code_categorie_velo, libelle_categorie_velo FROM Categorie_velo ORDER BY libelle_categorie_velo; '''
-    mycursor.execute(sql)
+    mycursor = get_db().cursor()
+    sql_categorie = "SELECT code_categorie_velo, libelle_categorie_velo FROM Categorie_velo;"
+    sql_etat = "SELECT code_etat, libelle_etat FROM Etat;"
+    mycursor.execute(sql_categorie)
     categories = mycursor.fetchall()
-
-    sql = ''' SELECT code_etat, libelle_etat FROM Etat ORDER BY libelle_etat; '''
-    mycursor.execute(sql)
+    mycursor.execute(sql_etat)
     etats = mycursor.fetchall()
-
     return render_template('velo/add_velo.html', categories=categories, etats=etats)
 
-# Ajouter un vélo (POST)
 @app.route('/velo/add', methods=['POST'])
 def valid_add_velo():
     libelle_velo = request.form['libelle_velo']
@@ -290,39 +286,37 @@ def valid_add_velo():
     date_achat = request.form['date_achat']
     code_categorie_velo = request.form['code_categorie_velo']
     code_etat = request.form['code_etat']
-
+    
     mycursor = get_db().cursor()
-    sql = ''' INSERT INTO Velo (libelle_velo, prix, date_achat, code_categorie_velo, code_etat) 
-              VALUES (%s, %s, %s, %s, %s); '''
+    sql = '''
+        INSERT INTO Velo (libelle_velo, prix, date_achat, code_categorie_velo, code_etat)
+        VALUES (%s, %s, %s, %s, %s);
+    '''
     values = (libelle_velo, prix, date_achat, code_categorie_velo, code_etat)
     mycursor.execute(sql, values)
     get_db().commit()
+    flash("Vélo ajouté avec succès !", "success")
     return redirect(url_for('show_velo'))
 
-# Modifier un vélo (GET)
 @app.route('/velo/edit', methods=['GET'])
 def edit_velo():
     id = request.args.get('id')
+    mycursor = get_db().cursor()
 
-    # Charger les informations du vélo
-    mycursor = get_db().cursor(dictionary=True)
-    sql = ''' SELECT * FROM Velo WHERE code_velo = %s; '''
-    mycursor.execute(sql, (id,))
+    sql_velo = "SELECT * FROM Velo WHERE code_velo = %s;"
+    mycursor.execute(sql_velo, (id,))
     velo = mycursor.fetchone()
 
-    # Charger les catégories
-    sql = ''' SELECT code_categorie_velo, libelle_categorie_velo FROM Categorie_velo ORDER BY libelle_categorie_velo; '''
-    mycursor.execute(sql)
+    sql_categorie = "SELECT code_categorie_velo, libelle_categorie_velo FROM Categorie_velo;"
+    mycursor.execute(sql_categorie)
     categories = mycursor.fetchall()
 
-    # Charger les états
-    sql = ''' SELECT code_etat, libelle_etat FROM Etat ORDER BY libelle_etat; '''
-    mycursor.execute(sql)
+    sql_etat = "SELECT code_etat, libelle_etat FROM Etat;"
+    mycursor.execute(sql_etat)
     etats = mycursor.fetchall()
 
     return render_template('velo/edit_velo.html', velo=velo, categories=categories, etats=etats)
 
-# Modifier un vélo (POST)
 @app.route('/velo/edit', methods=['POST'])
 def valid_edit_velo():
     id = request.form['id']
@@ -333,25 +327,27 @@ def valid_edit_velo():
     code_etat = request.form['code_etat']
 
     mycursor = get_db().cursor()
-    sql = ''' UPDATE Velo 
-              SET libelle_velo = %s, prix = %s, date_achat = %s, code_categorie_velo = %s, code_etat = %s 
-              WHERE code_velo = %s; '''
+    sql = '''
+        UPDATE Velo
+        SET libelle_velo = %s, prix = %s, date_achat = %s, 
+            code_categorie_velo = %s, code_etat = %s
+        WHERE code_velo = %s;
+    '''
     values = (libelle_velo, prix, date_achat, code_categorie_velo, code_etat, id)
     mycursor.execute(sql, values)
     get_db().commit()
+    flash("Vélo modifié avec succès !", "success")
     return redirect(url_for('show_velo'))
 
-# Supprimer un vélo
 @app.route('/velo/delete', methods=['POST'])
 def delete_velo():
     id = request.form['id']
     mycursor = get_db().cursor()
-    sql = ''' DELETE FROM Velo WHERE code_velo = %s; '''
+    sql = "DELETE FROM Velo WHERE code_velo = %s;"
     mycursor.execute(sql, (id,))
     get_db().commit()
+    flash("Vélo supprimé avec succès !", "success")
     return redirect(url_for('show_velo'))
-
-
 
 #####################
 

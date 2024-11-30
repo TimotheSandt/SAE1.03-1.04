@@ -1,12 +1,46 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Vélo
+Modifier un Vélo
 {% endblock %}
 
-
 {% block body %}
+<h3>Modifier un Vélo</h3>
 
+<form action="/velo/edit" method="POST">
+    <input type="hidden" name="id" value="{{ velo.code_velo }}">
 
+    <label for="libelle_velo">Libellé :</label>
+    <input type="text" name="libelle_velo" id="libelle_velo" value="{{ velo.libelle_velo }}" maxlength="50" required>
 
+    <label for="prix">Prix :</label>
+    <input type="number" name="prix" id="prix" step="0.01" value="{{ velo.prix }}" required>
+
+    <label for="date_achat">Date d'achat :</label>
+    <input type="date" name="date_achat" id="date_achat" value="{{ velo.date_achat }}" required>
+
+    <label for="code_categorie_velo">Catégorie :</label>
+    <select name="code_categorie_velo" id="code_categorie_velo" required>
+        {% for categorie in categories %}
+            <option value="{{ categorie.code_categorie_velo }}" 
+                {% if categorie.code_categorie_velo == velo.code_categorie_velo %} selected {% endif %}>
+                {{ categorie.libelle_categorie_velo }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="code_etat">État :</label>
+    <select name="code_etat" id="code_etat" required>
+        {% for etat in etats %}
+            <option value="{{ etat.code_etat }}" 
+                {% if etat.code_etat == velo.code_etat %} selected {% endif %}>
+                {{ etat.libelle_etat }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Modifier</button>
+</form>
+
+<a href="/velo/show">Retour à la liste des vélos</a>
 {% endblock %}
