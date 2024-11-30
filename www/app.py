@@ -183,11 +183,11 @@ def edit_location():
     # recherche de la location
     id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql =   ''' SELECT ID_location AS ID, prix, date_location AS date, duree, locataire, bailleur, code_velo
+    sql =   ''' SELECT ID_location AS ID, prix, date_location AS date, duree, locataire, bailleur, code_velo, id_facture
                 FROM Location
-                WHERE ID = %s;
+                WHERE ID_location = %s;
             '''
-    values = (id)
+    values = (id,)
     mycursor.execute(sql, values)
     location = mycursor.fetchone()
     
@@ -220,18 +220,19 @@ def valid_edit_location():
     locataire = request.form['locataire']
     bailleur = request.form['bailleur']
     velo = request.form['velo']
+    id_facture = request.form['facture']
     
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
-                SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s
+                SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s, id_facture = %s
                 WHERE ID_location = %s;
             '''
-    values = (prix, date, duree, locataire, bailleur, velo, id)
+    values = (prix, date, duree, locataire, bailleur, velo, id_facture, id)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
 
-@app.route('/location/delete', methods=['POST'])
+@app.route('/location/delete', methods=['GET'])
 def delete_location():
     id = request.form['id']
     mycursor = get_db().cursor()

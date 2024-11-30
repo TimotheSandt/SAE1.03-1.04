@@ -13,6 +13,7 @@ Location
 <form action="/location/add" method="POST">
 
     <input type="hidden" name="id" value="{{ location.ID }}" id="id" required>
+    <input type="hidden" name="facture" value="{{ location.id_facture }}" id="facture" required>
 
     <label for="prix">Prix : </label>
     <input type="number" name="prix" id="prix" value="{{ location.prix }}" step="1" required>
