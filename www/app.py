@@ -306,6 +306,78 @@ def delete_location():
     get_db().commit()
     return redirect(url_for('show_location'))
 
+def get_individus_etats():
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
+                FROM Location
+                JOIN Individu ON Location.locataire = Individu.id_individu
+                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
+                ORDER BY nom_prenom;
+            '''
+    mycursor.execute(sql)
+    locataires = mycursor.fetchall()
+    
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
+                FROM Location
+                JOIN Individu ON Location.bailleur = Individu.id_individu
+                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
+                ORDER BY nom_prenom;
+            '''
+    mycursor.execute(sql)
+    bailleurs = mycursor.fetchall()
+    
+    
+    return (locataires, bailleurs)
+
+@app.route('/location/etat', methods=['GET'])
+def etat_location():
+    locataires, bailleurs = get_individus_etats()
+    return render_template('location/etat_location.html', locataires=locataires, bailleurs=bailleurs)
+
+
+def get_best_worst_individu(classification, type_individu):
+    assert type in ['locataire', 'bailleur'], "Type d'individu inconnu"
+    
+    if classification == 'pire':
+        ordre = 'ASC'
+    elif classification == 'best':
+        ordre = 'DESC'
+    else:
+        raise ValueError("Classification inconnue")
+    
+    mycursor = get_db().cursor()
+    sql =   f''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, SUM(Facture.prix_total) AS montant
+                FROM Location
+                JOIN Individu ON Location.{type_individu} = Individu.id_individu
+                JOIN Facture ON Location.id_facture = Facture.id_facture
+                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
+                ORDER BY montant {ordre}
+                LIMIT 1;
+            '''
+    mycursor.execute(sql)
+    return mycursor.fetchone()
+
+def render_etat_location(individu):
+    locataires, bailleurs = get_individus_etats()
+    return render_template('location/etat_location.html', individu=individu, locataires=locataires, bailleurs=bailleurs)
+
+@app.route('/location/etat', methods=['POST'])
+def valid_etat_location():
+    locataire = request.form.get('locataire')
+    if locataire in ['pire', 'best']:
+        locataire = get_best_worst_individu(locataire, 'locataire')
+        
+    bailleur = request.form.get('bailleur')
+    if bailleur in ['pire', 'best']:
+        bailleur = get_best_worst_individu(bailleur, 'bailleur')
+    
+    individu = locataire if locataire is not None else bailleur
+    type_individu = 'locataire' if locataire is not None else 'bailleur'
+    
+    
+    return render_etat_location(individu)
+
 ########### Reparation ###########
 
 @app.route('/reparation/show', methods=['GET'])
