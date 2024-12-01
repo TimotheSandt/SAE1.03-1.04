@@ -405,7 +405,7 @@ def valid_etat_locataire():
     
     return render_etat_locataire(locataire)
 
-########### Reparation ###########
+########### Réparation ###########
 
 @app.route('/reparation/show', methods=['GET'])
 def show_reparation():
@@ -415,7 +415,7 @@ def show_reparation():
                        Reparation.duree_reparation AS duree,
                        Reparation.description_reparation AS description,
                        Reparation.prix_main_d_oeuvre AS prix, 
-                       Reparation.id_facture AS facture,
+                       Facture.prix_total AS facture,
                        Type_reparation.libelle_type_reparation AS type_reparation,
                        Velo.libelle_velo AS velo,
                        Individu.nom AS individu
@@ -423,6 +423,7 @@ def show_reparation():
                 JOIN Velo ON Reparation.code_velo = Velo.code_velo
                 JOIN Individu ON Reparation.id_individu = Individu.id_individu
                 JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
+                JOIN Facture ON Reparation.id_facture = Facture.id_facture
                 ORDER BY date;   
             '''
     
@@ -430,6 +431,39 @@ def show_reparation():
 
     reparations = mycursor.fetchall()
     return render_template('reparation/show_reparation.html', reparations=reparations)
+
+
+def render_add_reparation(date = None, duree = None, description = None, prix = None, facture = None, type_reparation = None, velo = None, individu = None):
+    reparation = {
+        'date': date,
+        'duree': duree,
+        'description': description,
+        'prix': prix,
+        'facture': facture,
+        'type_reparation': type_reparation,
+        'code_velo': velo,
+        'individu': individu
+    }
+    
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT code_velo, libelle_velo
+                FROM Velo
+                ORDER BY libelle_velo;
+            '''
+    mycursor.execute(sql)
+    velos = mycursor.fetchall()
+    
+    sql =   ''' SELECT id_individu AS id, CONCAT(nom, ' ', prenom) AS nom_prenom
+                FROM Individu;
+            '''
+    mycursor.execute(sql)
+    individus = mycursor.fetchall()
+    
+    return render_template('reparation/add_reparation.html', velos=velos, individus=individus, reparation=reparation)
+
+@app.route('/reparation/add', methods=['GET'])
+def add_reparation():
+    return render_add_reparation()
 
 
 
