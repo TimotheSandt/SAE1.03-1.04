@@ -6,7 +6,6 @@ Ajouter un Vélo
 
 {% block body %}
 
-
 <h3>Ajouter un Vélo</h3>
 
 <form action="/velo/add" method="POST">
@@ -22,6 +21,7 @@ Ajouter un Vélo
 
     <label for="code_categorie_velo">Catégorie :</label>
     <select name="code_categorie_velo" id="code_categorie_velo" required>
+        <option value="" selected disabled hidden>Choisissez une catégorie</option>
         {% for categorie in categories %}
             <option value="{{ categorie.code_categorie_velo }}">{{ categorie.libelle_categorie_velo }}</option>
         {% endfor %}
@@ -29,6 +29,7 @@ Ajouter un Vélo
 
     <label for="code_etat">État :</label>
     <select name="code_etat" id="code_etat" required>
+        <option value="" selected disabled hidden>Choisissez un état</option>
         {% for etat in etats %}
             <option value="{{ etat.code_etat }}">{{ etat.libelle_etat }}</option>
         {% endfor %}
@@ -38,4 +39,5 @@ Ajouter un Vélo
 </form>
 
 <a href="/velo/show">Retour à la liste des vélos</a>
+
 {% endblock %}
