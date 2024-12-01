@@ -1,69 +1,47 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Location
+Ajouter un Vélo
 {% endblock %}
-
 
 {% block body %}
 
 
-<h3>Ajouter une Location</h3>
+<h3>Ajouter un Vélo</h3>
 
-<form action="/location/add" method="POST">
+<form action="/velo/add" method="POST">
 
+    <label for="libelle_velo">Libellé :</label>
+    <input type="text" name="libelle_velo" id="libelle_velo" maxlength="50" required>
 
-    <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value={{ location.prix }} step="0.01" required>
+    <label for="prix">Prix :</label>
+    <input type="number" name="prix" id="prix" placeholder="Prix en euros" required>
 
-    <label for="date">Date début location : </label>
-    <input type="date" name="date" id="date" value={{ location.date }} required>
+    <label for="date_achat">Date d'achat :</label>
+    <input type="date" name="date_achat" id="date_achat" required>
 
-    <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" value={{ location.duree }} required>
-
-
-
-    <label for="locataire">Locataire : </label>
-    <select name="locataire" id="locataire" required>
-        {% if location.locataire == None %}
-            <option value="" selected disabled hidden>Choisissez un locataire</option>
+    <label for="code_categorie_velo">Catégorie :</label>
+    <select name="code_categorie_velo" id="code_categorie_velo" required>
+    {% if categorie.code_categorie_velo == None %}
+            <option value="" selected disabled hidden>Choisissez une categorie</option>
         {% endif %}
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if location.locataire == individu.id %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
+        {% for categorie in categories %}
+            <option value="{{ categorie.code_categorie_velo }}">{{ categorie.libelle_categorie_velo }}</option>
         {% endfor %}
     </select>
-    
-    <label for="bailleur">Bailleur : </label>
-    <select name="bailleur" id="bailleur" required>
-        {% if location.bailleur == None %}
-            <option value="" selected disabled hidden>Choisissez un bailleur</option>
+
+    <label for="code_etat">État :</label>
+    <select name="code_etat" id="code_etat" required>
+    {% if etat.code_etat == None %}
+            <option value="" selected disabled hidden>Choisissez une Etat</option>
         {% endif %}
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if location.bailleur == individu.id %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-    
-    <label for="velo">Velo : </label>
-    <select name="velo" id="velo" required>
-        <option value="" selected disabled hidden>Choisissez un velo</option>
-        {% for velo in velos %}
-            <option value="{{ velo.code_velo }}">
-                {{ velo.libelle_velo }}
-            </option>
+        {% for etat in etats %}
+            <option value="{{ etat.code_etat }}">{{ etat.libelle_etat }}</option>
         {% endfor %}
     </select>
 
-
-    <button type="submit">Ajouter Location</button>
-    
+    <button type="submit">Ajouter</button>
 </form>
 
-<a href="/location/show">Retour</a>
+<a href="/velo/show">Retour à la liste des vélos</a>
 {% endblock %}

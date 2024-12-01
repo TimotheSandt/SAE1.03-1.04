@@ -6,7 +6,6 @@ Liste des Vélos
 
 {% block body %}
 
-
 <h3>Liste des Vélos</h3>
 <a href="/velo/add">Ajouter un Vélo</a>
 <br><br>
@@ -24,27 +23,26 @@ Liste des Vélos
         </tr>
     </thead>
     <tbody>
-        {% for velo in velos %}
-        <tr>
-            <td>{{ velo.id }}</td>
-            <td>{{ velo.libelle_velo }}</td>
-            <td>{{ velo.prix }}</td>
-            <td>{{ velo.date_achat }}</td>
-            <td>{{ velo.categorie }}</td>
-            <td>{{ velo.etat }}</td>
-            <td>
-                <a href="/velo/edit?id={{ velo.id }}">editer</a>
-                <a href="/velo/delete?id={{ ligne.id }}" >supprimer</a>
-            </td>
-        </tr>
-        {% endfor %}
-    {% else %}
+        {% if velos %}
+            {% for velo in velos %}
             <tr>
-                  <td>
-                      Aucun velo n'a etait ajouteé
-                  </td>
-           </tr>
-    {% endif %}
+                <td>{{ velo.id }}</td>
+                <td>{{ velo.libelle_velo }}</td>
+                <td>{{ velo.prix }}</td>
+                <td>{{ velo.date_achat }}</td>
+                <td>{{ velo.categorie }}</td>
+                <td>{{ velo.etat }}</td>
+                <td>
+                    <a href="/velo/edit?id={{ velo.id }}">editer</a>
+                    <a href="/velo/delete?id={{ velo.id }}">supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun vélo n'a été ajouté</td>
+            </tr>
+        {% endif %}
     </tbody>
 </table>
 
