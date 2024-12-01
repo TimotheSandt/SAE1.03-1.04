@@ -24,27 +24,14 @@ Réparation
 
 
 
-    <label for="locataire">Locataire : </label>
-    <select name="locataire" id="locataire" required>
-        {% if reparation.locataire == None %}
-            <option value="" selected disabled hidden>Choisissez un locataire</option>
+    <label for="locataire">individu concerné : </label>
+    <select name="individu" id="individu" required>
+        {% if reparation.individu == None %}
+            <option value="" selected disabled hidden>Choisissez un individu</option>
         {% endif %}
         {% for individu in individus %}
             <option value="{{ individu.id }}"
                 {% if reparation.locataire == individu.id %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="bailleur">Bailleur : </label>
-    <select name="bailleur" id="bailleur" required>
-        {% if reparation.bailleur == None %}
-            <option value="" selected disabled hidden>Choisissez un bailleur</option>
-        {% endif %}
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if reparation.bailleur == individu.id %} selected {% endif %}>
                 {{ individu.nom_prenom }}
             </option>
         {% endfor %}
@@ -61,7 +48,7 @@ Réparation
     </select>
 
 
-    <button type="submit">Ajouter Réparation</button>
+    <button type="submit">Ajouter réparation</button>
 
 </form>
 
