@@ -26,9 +26,6 @@ Réparation
 
     <label for="locataire">individu concerné : </label>
     <select name="individu" id="individu" required>
-        {% if reparation.individu == None %}
-            <option value="" selected disabled hidden>Choisissez un individu</option>
-        {% endif %}
         {% for individu in individus %}
             <option value="{{ individu.id }}"
                 {% if reparation.locataire == individu.id %} selected {% endif %}>
