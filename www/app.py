@@ -446,6 +446,12 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
     }
     
     mycursor = get_db().cursor()
+    sql =   ''' SELECT code_type_reparation AS id_type_reparation, libelle_type_reparation
+                FROM Type_reparation;
+            '''
+    mycursor.execute(sql)
+    type_reparations = mycursor.fetchall()
+
     sql =   ''' SELECT code_velo, libelle_velo
                 FROM Velo
                 ORDER BY libelle_velo;
@@ -459,7 +465,7 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
     mycursor.execute(sql)
     individus = mycursor.fetchall()
     
-    return render_template('reparation/add_reparation.html', velos=velos, individus=individus, reparation=reparation)
+    return render_template('reparation/add_reparation.html', velos=velos, individus=individus, reparation=reparation, types_reparation=types_reparation)
 
 @app.route('/reparation/add', methods=['GET'])
 def add_reparation():
