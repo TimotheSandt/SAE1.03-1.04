@@ -450,7 +450,7 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
                 FROM Type_reparation;
             '''
     mycursor.execute(sql)
-    type_reparations = mycursor.fetchall()
+    types_reparation = mycursor.fetchall()
 
     sql =   ''' SELECT code_velo, libelle_velo
                 FROM Velo
