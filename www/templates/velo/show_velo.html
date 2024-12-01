@@ -5,7 +5,11 @@ Liste des Vélos
 {% endblock %}
 
 {% block body %}
+
+
 <h3>Liste des Vélos</h3>
+<a href="/velo/add">Ajouter un Vélo</a>
+<br><br>
 
 <table>
     <thead>
@@ -29,16 +33,19 @@ Liste des Vélos
             <td>{{ velo.categorie }}</td>
             <td>{{ velo.etat }}</td>
             <td>
-                <a href="/velo/edit?id={{ velo.id }}">Modifier</a>
-                <form action="/velo/delete" method="POST" style="display:inline;">
-                    <input type="hidden" name="id" value="{{ velo.id }}">
-                    <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce vélo ?')">Supprimer</button>
-                </form>
+                <a href="/velo/edit?id={{ velo.id }}">editer</a>
+                <a href="/velo/delete?id={{ ligne.id }}" >supprimer</a>
             </td>
         </tr>
         {% endfor %}
+    {% else %}
+            <tr>
+                  <td>
+                      Aucun velo n'a etait ajouteé
+                  </td>
+           </tr>
+    {% endif %}
     </tbody>
 </table>
 
-<a href="/velo/add">Ajouter un Vélo</a>
 {% endblock %}
