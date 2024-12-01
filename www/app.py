@@ -154,12 +154,12 @@ def add_location():
     return render_add_location()
 
 
-def check_date_conflict(velo, date, duree):
+def check_date_conflict(velo, date, duree, id_location = None):
     ### recherche des conflits de dates
     mycursor = get_db().cursor()
     sql =   ''' SELECT id_location
                 FROM Location
-                WHERE (code_velo = %s) AND 
+                WHERE (code_velo = %s) AND id_location != %s AND 
                         (
                             ( date_location BETWEEN %s AND DATE_ADD(%s, INTERVAL %s DAY) ) OR
                             ( DATE_ADD(date_location, INTERVAL duree DAY) BETWEEN %s AND DATE_ADD(%s, INTERVAL %s DAY) ) OR
@@ -176,12 +176,11 @@ def check_date_conflict(velo, date, duree):
     # dn BETWEEN d AND f
     # fn BETWEEN dn AND d
     
-    values = (velo, 
+    values = (velo, id_location,
                 date, date, duree,
                 date, date, duree,
                 date, 
-                date, duree
-            )
+                date, duree,            )
     mycursor.execute(sql, values)
     location = mycursor.fetchall()
     has_conflict = len(location) != 0
@@ -280,7 +279,7 @@ def valid_edit_location():
     id_facture = request.form['facture']
     
     
-    if check_date_conflict(velo, date, duree):
+    if check_date_conflict(velo, date, duree, id):
         flash("Vélo indisponible durant la location", "danger")
         return redirect(url_for('edit_location', id=id))
     
@@ -306,38 +305,35 @@ def delete_location():
     get_db().commit()
     return redirect(url_for('show_location'))
 
-def get_individus_etats():
-    mycursor = get_db().cursor()
-    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
-                FROM Location
-                JOIN Individu ON Location.locataire = Individu.id_individu
-                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
-                ORDER BY nom_prenom;
-            '''
-    mycursor.execute(sql)
-    locataires = mycursor.fetchall()
-    
-    mycursor = get_db().cursor()
-    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
-                FROM Location
-                JOIN Individu ON Location.bailleur = Individu.id_individu
-                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
-                ORDER BY nom_prenom;
-            '''
-    mycursor.execute(sql)
-    bailleurs = mycursor.fetchall()
-    
-    
-    return (locataires, bailleurs)
+### Etat
 
-@app.route('/location/etat', methods=['GET'])
-def etat_location():
-    locataires, bailleurs = get_individus_etats()
-    return render_template('location/etat_location.html', locataires=locataires, bailleurs=bailleurs)
+def get_individu_by_type(type_individu):
+    assert type_individu in ['locataire', 'bailleur']
+    mycursor = get_db().cursor()
+    sql =   f''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
+                FROM Location
+                JOIN Individu ON Location.{type_individu} = Individu.id_individu
+                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
+                ORDER BY nom_prenom;
+            '''
+    mycursor.execute(sql)
+    individu = mycursor.fetchall()
+    
+    return individu
+
+@app.route('/location/etat/locataire', methods=['GET'])
+def etat_locataire():
+    locataires = get_individu_by_type('locataire')
+    return render_template('location/etat_locataire.html', locataires=locataires)
+
+@app.route('/location/etat/bailleur', methods=['GET'])
+def etat_bailleur():
+    bailleurs = get_individu_by_type('bailleur')
+    return render_template('location/etat_bailleur.html', bailleurs=bailleurs)
 
 
 def get_best_worst_individu(classification, type_individu):
-    assert type in ['locataire', 'bailleur'], "Type d'individu inconnu"
+    assert type_individu in ['locataire', 'bailleur'], "Type d'individu inconnu"
     
     if classification == 'pire':
         ordre = 'ASC'
@@ -358,25 +354,56 @@ def get_best_worst_individu(classification, type_individu):
     mycursor.execute(sql)
     return mycursor.fetchone()
 
-def render_etat_location(individu):
-    locataires, bailleurs = get_individus_etats()
-    return render_template('location/etat_location.html', individu=individu, locataires=locataires, bailleurs=bailleurs)
+def render_etat_locataire(individu):
+    locataires = get_individu_by_type('locataire')
+    
+    # recherche des bailleurs
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, SUM(Facture.prix_total) AS montant
+                FROM Location
+                JOIN Individu ON Location.bailleur = Individu.id_individu
+                JOIN Facture ON Location.id_facture = Facture.id_facture
+                WHERE Location.locataire = %s
+                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom;
+            '''
+    values = (individu,)
+    mycursor.execute(sql, values)
+    bailleur = mycursor.fetchall()
+    
+    # recherche des velos
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT code_velo, libelle_velo, COUNT(code_velo) AS nb, SUM(Location.duree) AS duree
+                FROM Velo
+                JOIN Location ON Velo.code_velo = Location.code_velo
+                WHERE Location.locataire = %s
+                GROUP BY code_velo, libelle_velo
+                ORDER BY nb DESC;
+            '''
+    values = (individu,)
+    mycursor.execute(sql, values)
+    velos = mycursor.fetchall()
+    
+    # recherche des factures
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT SUM(prix_total) AS montant
+                FROM Location
+                WHERE Location.locataire = %s
+                GROUP BY id_facture;
+            '''
+    values = (individu,)
+    mycursor.execute(sql, values)
+    factures = mycursor.fetchall()
+    
+    return render_template('location/etat_locataire.html', locataires=locataires, 
+                           bailleur=bailleur, velos=velos, factures=factures, individu=individu)
 
-@app.route('/location/etat', methods=['POST'])
-def valid_etat_location():
+@app.route('/location/etat/locataire', methods=['POST'])
+def valid_etat_locataire():
     locataire = request.form.get('locataire')
     if locataire in ['pire', 'best']:
         locataire = get_best_worst_individu(locataire, 'locataire')
-        
-    bailleur = request.form.get('bailleur')
-    if bailleur in ['pire', 'best']:
-        bailleur = get_best_worst_individu(bailleur, 'bailleur')
     
-    individu = locataire if locataire is not None else bailleur
-    type_individu = 'locataire' if locataire is not None else 'bailleur'
-    
-    
-    return render_etat_location(individu)
+    return render_etat_locataire(locataire)
 
 ########### Reparation ###########
 

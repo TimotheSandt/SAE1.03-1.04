@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Location
+{% endblock %}
+
+
+{% block body %}
+
+<form action="/location/etat" method="POST">
+    <label for="locataire">Locataire :</label>
+    <select name="locataire" id="locataire" required>
+        <option value="" disabled selected hidden>Veuillez sélectionner un locataire</option>
+        <option value="best">Meilleurs locataire</option>
+        <option value="pire">Pire locataire</option>
+        {% for locataire in locataires %}
+            <option value="{{ locataire.id }}">{{ locataire.nom_prenom }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Voir l'état</button>
+</form>
+
+<div>
+    velo concerné
+    location effectuer
+    prix total
+    personne concerné
+
+</div>
+
+{% endblock %}
