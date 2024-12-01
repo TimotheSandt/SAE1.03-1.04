@@ -523,16 +523,17 @@ def valid_edit_velo():
     flash("Vélo modifié avec succès !", "success")
     return redirect(url_for('show_velo'))
 
-@app.route('/velo/delete', methods=['POST'])
+@app.route('/velo/delete', methods=['GET'])
 def delete_velo():
-    id = request.form['id']
+    id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql = "DELETE FROM Velo WHERE code_velo = %s;"
-    mycursor.execute(sql, (id,))
+    sql = '''DELETE FROM Velo
+             WHERE code_velo = %s;'''
+    values = (id)  
+    mycursor.execute(sql, values)
     get_db().commit()
     flash("Vélo supprimé avec succès !", "success")
     return redirect(url_for('show_velo'))
-
 #####################
 
 if __name__ == '__main__':
