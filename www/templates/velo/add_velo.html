@@ -5,20 +5,23 @@ Ajouter un Vélo
 {% endblock %}
 
 {% block body %}
+
 <h3>Ajouter un Vélo</h3>
 
 <form action="/velo/add" method="POST">
+
     <label for="libelle_velo">Libellé :</label>
     <input type="text" name="libelle_velo" id="libelle_velo" maxlength="50" required>
 
     <label for="prix">Prix :</label>
-    <input type="number" name="prix" id="prix" placeholder="Prix en euros" required>
+    <input type="number" name="prix" id="prix" placeholder="Prix" required>
 
     <label for="date_achat">Date d'achat :</label>
     <input type="date" name="date_achat" id="date_achat" required>
 
     <label for="code_categorie_velo">Catégorie :</label>
     <select name="code_categorie_velo" id="code_categorie_velo" required>
+        <option value="" selected disabled hidden>Choisissez une catégorie</option>
         {% for categorie in categories %}
             <option value="{{ categorie.code_categorie_velo }}">{{ categorie.libelle_categorie_velo }}</option>
         {% endfor %}
@@ -26,6 +29,7 @@ Ajouter un Vélo
 
     <label for="code_etat">État :</label>
     <select name="code_etat" id="code_etat" required>
+        <option value="" selected disabled hidden>Choisissez un état</option>
         {% for etat in etats %}
             <option value="{{ etat.code_etat }}">{{ etat.libelle_etat }}</option>
         {% endfor %}
@@ -35,4 +39,5 @@ Ajouter un Vélo
 </form>
 
 <a href="/velo/show">Retour à la liste des vélos</a>
+
 {% endblock %}

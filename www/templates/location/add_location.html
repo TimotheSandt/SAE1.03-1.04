@@ -36,7 +36,7 @@ Location
             </option>
         {% endfor %}
     </select>
-    
+
     <label for="bailleur">Bailleur : </label>
     <select name="bailleur" id="bailleur" required>
         {% if location.bailleur == None %}
@@ -49,7 +49,7 @@ Location
             </option>
         {% endfor %}
     </select>
-    
+
     <label for="velo">Velo : </label>
     <select name="velo" id="velo" required>
         <option value="" selected disabled hidden>Choisissez un velo</option>
@@ -62,7 +62,7 @@ Location
 
 
     <button type="submit">Ajouter Location</button>
-    
+
 </form>
 
 <a href="/location/show">Retour</a>
