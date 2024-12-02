@@ -498,7 +498,7 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
     }
     
     mycursor = get_db().cursor()
-    sql =   ''' SELECT code_type_reparation AS id_type_reparation, libelle_type_reparation
+    sql =   ''' SELECT code_type_reparation, libelle_type_reparation
                 FROM Type_reparation;
             '''
     mycursor.execute(sql)
@@ -539,6 +539,12 @@ def valid_add_reparation():
     type_reparation = request.form['type_reparation']
     velo = request.form['velo']
     individu = request.form['individu']
+    print("date :", date)
+    print("duree :", duree)
+    print("description :", description)
+    print("type_reparation :", type_reparation)
+    print("velo :", velo)
+    print("individu :", individu)
 
     ### Ajout de la facture
     mycursor = get_db().cursor()
@@ -567,7 +573,7 @@ def valid_add_reparation():
     values = (date, duree, description, prix, facture, type_reparation, velo, individu)
     mycursor.execute(sql, values)
     get_db().commit()
-    return redirect(url_for('show_reperation'))
+    return redirect(url_for('show_reparation'))
 
 ########### Velo ###########
 
