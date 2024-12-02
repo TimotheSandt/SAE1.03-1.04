@@ -5,45 +5,51 @@ Liste des Vélos
 {% endblock %}
 
 {% block body %}
+<section>
+    <header>
+        <h1>Liste des Vélos</h1>
+        <p>
+            Gérez vos vélos avec efficacité. 
+            <a href="/velo/add">Ajouter un nouveau vélo</a>
+        </p>
+    </header>
 
-<h3>Liste des Vélos</h3>
-<a href="/velo/add">ajouter un vélo</a>
-<br><br>
-
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th>Code</th>
-            <th>Libellé</th>
-            <th>Prix</th>
-            <th>Date Achat</th>
-            <th>Catégorie</th>
-            <th>État</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if velos | length >= 1 %}
-            {% for velo in velos %}
-            <tr>
-                <td>{{ velo.id }}</td>
-                <td>{{ velo.libelle_velo }}</td>
-                <td>{{ velo.prix }}</td>
-                <td>{{ velo.date_achat }}</td>
-                <td>{{ velo.categorie }}</td>
-                <td>{{ velo.etat }}</td>
-                <td>
-                    <a href="/velo/edit?id={{ velo.id }}">editer</a>
-                    <a href="/velo/delete?id={{ velo.id }}">supprimer</a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="7">Aucun vélo n'a été ajouté</td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
-
+    <main>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Libellé</th>
+                    <th>Prix</th>
+                    <th>Date Achat</th>
+                    <th>Catégorie</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if velos | length >= 1 %}
+                    {% for velo in velos %}
+                    <tr>
+                        <td>{{ velo.id }}</td>
+                        <td>{{ velo.libelle_velo }}</td>
+                        <td>{{ velo.prix }} €</td>
+                        <td>{{ velo.date_achat }}</td>
+                        <td>{{ velo.categorie }}</td>
+                        <td>{{ velo.etat }}</td>
+                        <td>
+                            <a href="/velo/edit?id={{ velo.id }}">Modifier</a> |
+                            <a href="/velo/delete?id={{ velo.id }}"> Supprimer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; font-weight: bold;">Aucun vélo disponible</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </main>
+</section>
 {% endblock %}
