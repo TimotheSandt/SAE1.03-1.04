@@ -191,7 +191,7 @@ def check_date_conflict(velo, date, duree, id_location = None):
 def valid_add_location():
     prix = request.form['prix']
     date = request.form['date']
-    duree = request.form['duree']
+    duree = int(request.form['duree']) - 1
     locataire = request.form['locataire']
     bailleur = request.form['bailleur']
     velo = request.form['velo']
@@ -240,8 +240,8 @@ def edit_location():
     # recherche de la location
     id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql =   ''' SELECT id_location AS id, prix, date_location AS date, duree, locataire, bailleur, code_velo, id_facture
-                FROM Location
+    sql =   ''' SELECT id_location AS id, prix, date_location AS date, duree + 1 AS duree, locataire, bailleur, code_velo, id_facture
+                    FROM Location
                 WHERE id_location = %s;
             '''
     values = (id,)
@@ -273,7 +273,7 @@ def valid_edit_location():
     id = request.form['id']
     prix = request.form['prix']
     date = request.form['date']
-    duree = request.form['duree']
+    duree = int(request.form['duree']) - 1
     locataire = request.form['locataire']
     bailleur = request.form['bailleur']
     velo = request.form['velo']
@@ -283,6 +283,19 @@ def valid_edit_location():
     if check_date_conflict(velo, date, duree, id):
         flash("Vélo indisponible durant la location", "danger")
         return redirect(url_for('edit_location', id=id))
+    
+    
+    ### Modification de la facture
+    mycursor = get_db().cursor()
+    sql =   ''' UPDATE Facture
+                SET prix_total = %s
+                WHERE id_facture = %s;
+            '''
+    values = (prix, id_facture)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    
+    ### Modification de la location
     
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
@@ -355,48 +368,86 @@ def get_best_worst_individu(classification, type_individu):
     mycursor.execute(sql)
     return mycursor.fetchone()
 
-def render_etat_locataire(individu):
+def render_etat_locataire(id_individu):
     locataires = get_individu_by_type('locataire')
+    
+    # recherche de l'individu
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
+                FROM Individu
+                WHERE Individu.id_individu = %s;
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    individu = mycursor.fetchone()
     
     # recherche des bailleurs
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, SUM(Facture.prix_total) AS montant
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, COUNT(Individu.id_individu) as nb, SUM(Facture.prix_total) AS montant
                 FROM Location
                 JOIN Individu ON Location.bailleur = Individu.id_individu
                 JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE Location.locataire = %s
                 GROUP BY Individu.id_individu, Individu.nom, Individu.prenom;
             '''
-    values = (individu,)
+    values = (id_individu,)
     mycursor.execute(sql, values)
-    bailleur = mycursor.fetchall()
+    individu_concerne = mycursor.fetchall()
     
     # recherche des velos
     mycursor = get_db().cursor()
-    sql =   ''' SELECT code_velo, libelle_velo, COUNT(code_velo) AS nb, SUM(Location.duree) AS duree
+    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Location.duree + 1) AS duree, SUM(Facture.prix_total) AS montant
                 FROM Velo
                 JOIN Location ON Velo.code_velo = Location.code_velo
+                JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE Location.locataire = %s
-                GROUP BY code_velo, libelle_velo
+                GROUP BY Velo.code_velo, Velo.libelle_velo
                 ORDER BY nb DESC;
             '''
-    values = (individu,)
+    values = (id_individu,)
     mycursor.execute(sql, values)
     velos = mycursor.fetchall()
     
-    # recherche des factures
+    
+    
     mycursor = get_db().cursor()
-    sql =   ''' SELECT SUM(prix_total) AS montant
+    sql =   ''' SELECT Location.id_location AS id, Location.prix, 
+                    Location.date_location AS date_debut, 
+                    DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
+                    Velo.libelle_velo AS velo, 
+                    CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
                 FROM Location
+                JOIN Velo ON Location.code_velo = Velo.code_velo
+                JOIN Individu AS bai ON Location.bailleur = bai.id_individu
                 WHERE Location.locataire = %s
-                GROUP BY id_facture;
+                ORDER BY date_location;
             '''
-    values = (individu,)
+    values = (id_individu,)
     mycursor.execute(sql, values)
-    factures = mycursor.fetchall()
+
+    locations = mycursor.fetchall()
+    
+    
+    # recherche du montant total
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT SUM(Facture.prix_total) AS montant, COUNT(Location.id_location) AS nb, SUM(Location.duree + 1) AS duree_total
+                FROM Location
+                JOIN Facture ON Location.id_facture = Facture.id_facture
+                WHERE Location.locataire = %s
+                GROUP BY Location.locataire;
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    temp = mycursor.fetchone()
+    montant_total = temp["montant"]
+    nb_location = temp["nb"]
+    duree_total = temp["duree_total"]
+    
+    
     
     return render_template('location/etat_locataire.html', locataires=locataires, 
-                           bailleur=bailleur, velos=velos, factures=factures, individu=individu)
+                           individu_concerne=individu_concerne, velos=velos, locations=locations, individu=individu,
+                           montant_total=montant_total, nb_location=nb_location, duree_total=duree_total)
 
 @app.route('/location/etat/locataire', methods=['POST'])
 def valid_etat_locataire():
