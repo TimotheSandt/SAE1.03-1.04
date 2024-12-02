@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, abort, flash
 from flask import session, g
 import pymysql.cursors
+from datetime import date
 
 from dotenv import load_dotenv
 import os
@@ -471,6 +472,11 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
 @app.route('/reparation/add', methods=['GET'])
 def add_reparation():
     return render_add_reparation()
+
+
+def check_date_conflict(date):
+    today = date.today()
+    return date > today
 
 
 @app.route('/reparation/add', methods=['POST'])
