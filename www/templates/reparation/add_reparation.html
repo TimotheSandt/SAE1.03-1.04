@@ -33,13 +33,16 @@ Réparation
     </select>
 
     <label for="description">Description : </label>
-    <input type="text" name="description" id="description" value={{ reparation.description }} >
+    <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
+}} >
 
-    <label for="locataire">individu concerné : </label>
+    <label for="individu">individu concerné : </label>
     <select name="individu" id="individu" required>
+        <option value="" selected disabled hidden>Choisissez un individu</option>
+
         {% for individu in individus %}
             <option value="{{ individu.id }}"
-                {% if reparation.locataire == individu.id %} selected {% endif %}>
+                {% if reparation.individu == individu.id %} selected {% endif %}>
                 {{ individu.nom_prenom }}
             </option>
         {% endfor %}
