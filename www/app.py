@@ -675,7 +675,7 @@ def valid_edit_reparation():
 
 
 @app.route('/reparation/delete', methods=['GET'])
-def delete_location():
+def delete_reparation():
     id = request.args.get('id')
     mycursor = get_db().cursor()
     sql =   ''' DELETE FROM Reparation
