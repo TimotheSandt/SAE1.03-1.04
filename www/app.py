@@ -467,12 +467,51 @@ def render_add_reparation(date = None, duree = None, description = None, prix = 
     
     return render_template('reparation/add_reparation.html', velos=velos, individus=individus, reparation=reparation, types_reparation=types_reparation)
 
+
 @app.route('/reparation/add', methods=['GET'])
 def add_reparation():
     return render_add_reparation()
 
 
+@app.route('/location/add', methods=['POST'])
+def valid_add_location():
+    date = request.form['date']
+    duree = request.form['duree']
+    description = request.form['description']
+    prix = request.form['prix']
+    facture = request.form['facture']
+    type_reparation = request.form['type_reparation']
+    velo = request.form['velo']
+    individu = request.form['individu']
 
+    ### Ajout de la facture
+    mycursor = get_db().cursor()
+    
+    sql =   ''' INSERT INTO Facture(prix_total)
+                VALUES (%s);
+            '''
+    values = (prix,)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT id_facture
+                FROM Facture
+                ORDER BY id_facture DESC
+                LIMIT 1;
+            '''
+    mycursor.execute(sql)
+    id_facture = mycursor.fetchone()['id_facture']
+    
+    ### Ajout de la réparation
+    mycursor = get_db().cursor()
+    sql =   ''' INSERT INTO Reparation(date_reparation, duree_reparation, description_reparation, prix_main_d_oeuvre, id_facture, code_type_reparation, code_velo, id_individu)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+            '''
+    values = (date, duree, description, prix, id_facture, type_reparation, velo, individu)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect(url_for('show_reperation'))
 
 ########### Velo ###########
 
