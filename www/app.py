@@ -479,7 +479,6 @@ def valid_add_reparation():
     duree = request.form['duree']
     description = request.form['description']
     prix = request.form['prix']
-    facture = request.form['facture']
     type_reparation = request.form['type_reparation']
     velo = request.form['velo']
     individu = request.form['individu']
