@@ -668,10 +668,10 @@ def valid_edit_reparation():
                 WHERE code_reparation = %s;
             ''' 
             
-    values = (prix, date, duree, type_reparation, bailleur, velo, id_facture, id)
+    values = (date, duree, description, prix, id_facture, type_reparation, velo, individu, id)
     mycursor.execute(sql, values)
     get_db().commit()
-    return redirect(url_for('show_location'))
+    return redirect(url_for('show_reparation'))
 
 
 ############################

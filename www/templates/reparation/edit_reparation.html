@@ -41,7 +41,7 @@ Réparation
         {% for type_reparation in types_reparation %}
             <option value="{{ type_reparation.id }}"
                 {% if type_reparation.id == reparation.code_type_reparation %} selected {% endif %}>
-                {{ individu.nom_prenom }} 
+                {{ type_reparation.libelle_type_reparation }} 
             </option>
         {% endfor %}
     </select>
