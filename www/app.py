@@ -100,7 +100,9 @@ def valid_add_individu():
     get_db().commit()
     return redirect('/')
 
+################################
 ########### Location ###########
+################################
 
 @app.route('/location/show', methods=['GET'])
 def show_location():
@@ -457,7 +459,9 @@ def valid_etat_locataire():
     
     return render_etat_locataire(locataire)
 
+##################################
 ########### Réparation ###########
+##################################
 
 @app.route('/reparation/show', methods=['GET'])
 def show_reparation():
@@ -567,7 +571,10 @@ def valid_add_reparation():
     
     ### Ajout de la réparation
     mycursor = get_db().cursor()
-    sql =   ''' INSERT INTO Reparation(date_reparation, duree_reparation, description_reparation, prix_main_d_oeuvre, id_facture, code_type_reparation, code_velo, id_individu)
+    sql =   ''' INSERT INTO Reparation(date_reparation, duree_reparation,
+                                       description_reparation, prix_main_d_oeuvre, 
+                                       id_facture, code_type_reparation, 
+                                       code_velo, id_individu)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
             '''
     values = (date, duree, description, prix, facture, type_reparation, velo, individu)
@@ -575,7 +582,101 @@ def valid_add_reparation():
     get_db().commit()
     return redirect(url_for('show_reparation'))
 
+
+@app.route('/reparation/edit/', methods=['GET'])
+def edit_reparation():
+    
+    # recherche de la réparation
+    id = request.args.get('id')
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT code_reparation AS id, 
+                       date_reparation AS date, 
+                       duree + 1 AS duree, 
+                       description_reparation AS description, 
+                       prix_main_d_oeuvre AS prix, 
+                       id_facture,
+                       code_type_reparation,
+                       code_velo, 
+                       id_individu
+                FROM Location
+                WHERE code_reparation = %s;
+            '''
+    values = (id,)
+    mycursor.execute(sql, values)
+    reparation = mycursor.fetchone()
+    
+    # recherche des velos
+    sql =   ''' SELECT code_velo, libelle_velo
+                FROM Velo
+                ORDER BY libelle_velo;
+            '''
+    mycursor.execute(sql)
+    velos = mycursor.fetchall()
+    
+    # recherche des individus
+    sql =   ''' SELECT id_individu AS id, CONCAT(nom, ' ', prenom) AS nom_prenom
+                FROM Individu
+                ORDER BY nom_prenom;
+            '''
+    mycursor.execute(sql)
+    individus = mycursor.fetchall()
+    
+    sql =   ''' SELECT code_type_reparation, libelle_type_reparation
+                FROM Type_reparation;
+            '''
+    mycursor.execute(sql)
+    types_reparation = mycursor.fetchall()
+    
+    return render_template('reparation/edit_reparation.html', reparation=reparation, velos=velos, individus=individus, types_reparation=types_reparation)
+
+
+@app.route('/reparation/edit', methods=['POST'])
+def valid_edit_reparation():
+    id = request.form['id']
+    date = request.form['date']
+    duree = int(request.form['duree']) - 1
+    description = request.form['description']
+    prix = request.form['prix']
+    id_facture = request.form['facture']
+    type_reparation = request.form['type_reparation']
+    velo = request.form['velo']
+    individu = request.form['individu']
+    
+    
+    ### Modification de la facture
+    mycursor = get_db().cursor()
+    sql =   ''' UPDATE Facture
+                SET prix_total = %s
+                WHERE id_facture = %s;
+            '''
+    values = (prix, id_facture)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    
+    
+    ### Modification de la réparation
+    mycursor = get_db().cursor()
+    sql =   ''' UPDATE Reparation
+                SET date_reparation = %s,
+                    duree_reparation = %s,
+                    description_reparation = %s,
+                    prix_main_d_oeuvre = %s,
+                    id_facture = %s,
+                    code_type_reparation = %s,
+                    code_velo = %s,
+                    id_individu = %s
+                WHERE code_reparation = %s;
+            ''' 
+            
+    values = (prix, date, duree, type_reparation, bailleur, velo, id_facture, id)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect(url_for('show_location'))
+
+
+############################
 ########### Velo ###########
+############################
 
 @app.route('/velo/show', methods=['GET'])
 def show_velo():
