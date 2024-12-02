@@ -25,6 +25,7 @@
     </table>
 {% endmacro %}
 
+
 {% extends "layout.html" %}
 
 {% block title %}
@@ -46,78 +47,79 @@
         <button type="submit">Voir l'état</button>
     </form>
 
-    {% if individu %}
-    <div>
-        <h1>Etat pour {{ individu.nom_prenom }} </h1>
 
-        <h3>Vélo</h3>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Code</th>
-                    <th>Libellé</th>
-                    <th>Nombre de location</th>
-                    <th>duree total</th>
-                    <th>Montant</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for velo in velos %}
-                <tr>
-                    <td>{{ velo.code_velo }}</td>
-                    <td>{{ velo.libelle_velo }}</td>
-                    <td>{{ velo.nb }}</td>
-                    <td>{{ velo.duree }}</td>
-                    <td>{{ velo.montant }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {% if individu and location %}
+        <div>
+            <h1>Etat pour {{ individu.nom_prenom }} </h1>
 
-        
-        <h3>Bailleur</h3>
-        {{ show_individus_concerne(bailleurs) }}
-
-        <h3>Locataire</h3>
-        {{ show_individus_concerne(locataires) }}
-
-        <h3>Location Effectuée</h3>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>id</th>
-                    <th>prix</th>
-                    <th>date début</th>
-                    <th>date fin</th>
-                    <th>velo</th>
-                    <th>locataire</th>       
-                    <th>bailleur</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ligne in locations %}
-                <tr>
-                        <td>{{ ligne.id }}</td>
-                        <td>{{ ligne.prix }}</td>
-                        <td>{{ ligne.date_debut }}</td>
-                        <td>{{ ligne.date_fin }}</td>
-                        <td>{{ ligne.velo }}</td>
-                        <td>{{ ligne.locataire }}</td>
-                        <td>{{ ligne.bailleur }}</td>
-                        <td>{{ ligne.station_id }}</td>
-                </tr>
+            <h3>Vélo</h3>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Libellé</th>
+                        <th>Nombre de location</th>
+                        <th>duree total</th>
+                        <th>Montant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for velo in velos %}
+                    <tr>
+                        <td>{{ velo.code_velo }}</td>
+                        <td>{{ velo.libelle_velo }}</td>
+                        <td>{{ velo.nb }}</td>
+                        <td>{{ velo.duree }}</td>
+                        <td>{{ velo.montant }}</td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        
+            
+            <h3>Bailleur</h3>
+            {{ show_individus_concerne(bailleurs) }}
 
-        {% if stat_locataire != None %}
-            {{ show_statistics(stat_locataire) }}
-        {% endif %}
+            <h3>Locataire</h3>
+            {{ show_individus_concerne(locataires) }}
 
-    </div>
-{% endif %}
+            <h3>Location Effectuée</h3>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>id</th>
+                        <th>prix</th>
+                        <th>date début</th>
+                        <th>date fin</th>
+                        <th>velo</th>
+                        <th>locataire</th>       
+                        <th>bailleur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ligne in locations %}
+                    <tr>
+                            <td>{{ ligne.id }}</td>
+                            <td>{{ ligne.prix }}</td>
+                            <td>{{ ligne.date_debut }}</td>
+                            <td>{{ ligne.date_fin }}</td>
+                            <td>{{ ligne.velo }}</td>
+                            <td>{{ ligne.locataire }}</td>
+                            <td>{{ ligne.bailleur }}</td>
+                            <td>{{ ligne.station_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
+            
 
+            {% if stat_locataire != None %}
+                {{ show_statistics(stat_locataire) }}
+            {% endif %}
+
+        </div>
+    {% elif individu %}
+        <p>Ancune Location pour {{ individu.nom_prenom }}
+    {% endif %}
 {% endblock %}
