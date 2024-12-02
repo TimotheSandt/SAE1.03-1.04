@@ -500,14 +500,14 @@ def valid_add_reparation():
                 LIMIT 1;
             '''
     mycursor.execute(sql)
-    id_facture = mycursor.fetchone()['id_facture']
+    facture = mycursor.fetchone()['id_facture']
     
     ### Ajout de la réparation
     mycursor = get_db().cursor()
     sql =   ''' INSERT INTO Reparation(date_reparation, duree_reparation, description_reparation, prix_main_d_oeuvre, id_facture, code_type_reparation, code_velo, id_individu)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
             '''
-    values = (date, duree, description, prix, id_facture, type_reparation, velo, individu)
+    values = (date, duree, description, prix, facture, type_reparation, velo, individu)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_reperation'))
