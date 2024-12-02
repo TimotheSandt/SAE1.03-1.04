@@ -473,8 +473,8 @@ def add_reparation():
     return render_add_reparation()
 
 
-@app.route('/location/add', methods=['POST'])
-def valid_add_location():
+@app.route('/reparation/add', methods=['POST'])
+def valid_add_reparation():
     date = request.form['date']
     duree = request.form['duree']
     description = request.form['description']
