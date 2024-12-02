@@ -674,6 +674,19 @@ def valid_edit_reparation():
     return redirect(url_for('show_reparation'))
 
 
+@app.route('/reparation/delete', methods=['GET'])
+def delete_location():
+    id = request.args.get('id')
+    mycursor = get_db().cursor()
+    sql =   ''' DELETE FROM Reparation
+                WHERE code_reparation = %s;
+            '''
+    values = (id)
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect(url_for('show_reparation'))
+
+
 ############################
 ########### Velo ###########
 ############################
