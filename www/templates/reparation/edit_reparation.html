@@ -25,6 +25,21 @@ Réparation
     <input type="number" name="duree" id="duree" value="{{ reparation.duree }}" required>
 
 
+    <label for="type_reparation">Type de réparation : </label>
+    <select name="type_reparation" id="type_reparation" required>
+        {% for type_reparation in types_reparation %}
+            <option value="{{ type_reparation.id }}"
+                {% if type_reparation.id == reparation.code_type_reparation %} selected {% endif %}>
+                {{ type_reparation.libelle_type_reparation }} 
+            </option>
+        {% endfor %}
+    </select>
+
+    
+    <label for="description">Description : </label>
+    <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
+
+
 
     <label for="individu">Individu : </label>
     <select name="individu" id="individu" required>
@@ -36,15 +51,6 @@ Réparation
         {% endfor %}
     </select>
     
-    <label for="type_reparation">Type de réparation : </label>
-    <select name="type_reparation" id="type_reparation" required>
-        {% for type_reparation in types_reparation %}
-            <option value="{{ type_reparation.id }}"
-                {% if type_reparation.id == reparation.code_type_reparation %} selected {% endif %}>
-                {{ type_reparation.libelle_type_reparation }} 
-            </option>
-        {% endfor %}
-    </select>
     
     <label for="velo">Velo : </label>
     <select name="velo" id="velo" required>
