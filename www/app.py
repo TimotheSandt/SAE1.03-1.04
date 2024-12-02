@@ -598,7 +598,7 @@ def edit_reparation():
                        code_type_reparation,
                        code_velo, 
                        id_individu
-                FROM Location
+                FROM Reparation
                 WHERE code_reparation = %s;
             '''
     values = (id,)
