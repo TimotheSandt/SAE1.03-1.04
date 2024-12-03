@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+État des Vélos
+{% endblock %}
+
+{% block body %}
+<section>
+    <header>
+        <h1>État des Vélos</h1>
+    </header>
+
+    <form action="/etat" method="GET">
+        <div>
+            <label for="date_debut">Date de début :</label>
+            <input type="date" id="date_debut" name="date_debut" required>
+        </div>
+        <div>
+            <label for="date_fin">Date de fin :</label>
+            <input type="date" id="date_fin" name="date_fin" required>
+        </div>
+        <div>
+            <label for="tri">Trier par :</label>
+            <select id="tri" name="tri" required>
+                <option value="montant_total">Montant Total €</option>
+                <option value="nb_locations">Nombre de Locations</option>
+                <option value="duree_totale">Durée Totale (jours)</option>
+            </select>
+        </div>
+        <button type="submit">Afficher l'état</button>
+    </form>
+
+    {% if resultats %}
+        <div>
+            <h2>Statistiques pour la période : {{ date_debut }} à {{ date_fin }}</h2>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Code Vélo</th>
+                        <th>Libellé</th>
+                        <th>Catégorie</th>
+                        <th>Nombre de Locations</th>
+                        <th>Durée Totale (jours)</th>
+                        <th>Montant Total (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for velo in resultats %}
+                    <tr>
+                        <td>{{ velo.code_velo }}</td>
+                        <td>{{ velo.libelle_velo }}</td>
+                        <td>{{ velo.categorie }}</td>
+                        <td>{{ velo.nb_locations }}</td>
+                        <td>{{ velo.duree_totale }}</td>
+                        <td>{{ velo.montant_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Aucune donnée disponible pour la période spécifiée.</p>
+    {% endif %}
+</section>
+{% endblock %}
