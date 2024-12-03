@@ -43,8 +43,8 @@ Réparation
                   <td>{{ ligne.individu }}</td>
                   <td>{{ ligne.description }}</td>
                   <td>
-                      <a href="/reparation/edit?id={{ ligne.id }}">Éditer</a>&nbsp;
-                      <a href="/reparation/delete?id={{ ligne.id }}" >Supprimer</a>
+                      <a class="edit_button" href="/reparation/edit?id={{ ligne.id }}">Éditer</a>&nbsp;
+                      <a class="delete_button" href="/reparation/delete?id={{ ligne.id }}" >Supprimer</a>
                   </td>
            </tr>
         {% endfor %}
