@@ -514,7 +514,7 @@ def valid_add_type_reparation():
     
     mycursor.execute(sql, values)
     get_db().commit()
-    return redirect('/')
+    return redirect('/reparation/show')
 
 
 
