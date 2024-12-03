@@ -29,8 +29,8 @@
                     <tr>
                         <th>Code</th>
                         <th>Libellé</th>
-                        <th>Nombre de location</th>
-                        <th>duree total</th>
+                        <th>Nombre de réparation</th>
+                        <th>Durée total</th>
                         <th>Montant</th>
                     </tr>
                 </thead>
@@ -87,11 +87,11 @@
                 <tbody>
                     {% for ligne in reparations %}
                     <tr>
-                            <td>{{ ligne.id }}</td>
+                            <td>{{ ligne.code_reparation }}</td>
                             <td>{{ ligne.date_debut }}</td>
                             <td>{{ ligne.duree }}</td>
                             <td>{{ ligne.prix }}</td>
-                            <td>{{ ligne.facture }}</td>
+                            <td>{{ ligne.id_facture }}</td>
                             <td>{{ ligne.velo }}</td>
                             <td>{{ ligne.individu }}</td>
                     </tr>
