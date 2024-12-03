@@ -764,10 +764,11 @@ def render_etat_reparation(id_individu):
     
     mycursor = get_db().cursor()
     sql =   ''' SELECT Reparation.code_reparation, 
-                       ROUND(Reparation.prix_main_d_oeuvre, 2) AS prix, 
                        Reparation.date_reparation AS date_debut, 
                        Reparation.duree_reparation AS duree, 
                        Reparation.description_reparation AS description, 
+                       ROUND(Reparation.prix_main_d_oeuvre, 2) AS prix, 
+                       ROUND(Facture.prix_total, 2) AS facture, 
                        Type_reparation.libelle_type_reparation AS type_reparation, 
                        Velo.libelle_velo AS velo, 
                        Individu.nom AS individu
@@ -775,6 +776,7 @@ def render_etat_reparation(id_individu):
                 JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
                 JOIN Velo ON Reparation.code_velo = Velo.code_velo
                 JOIN Individu ON Reparation.id_individu = Individu.id_individu
+                JOIN Facture ON Reparation.id_facture = Facture.id_facture
                 WHERE Reparation.id_individu = %s
                 ORDER BY date_reparation;
             '''
