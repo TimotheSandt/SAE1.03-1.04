@@ -771,7 +771,7 @@ def render_etat_reparation(id_individu):
                        ROUND(Facture.prix_total, 2) AS facture, 
                        Type_reparation.libelle_type_reparation AS type_reparation, 
                        Velo.libelle_velo AS velo, 
-                       Individu.nom AS individu
+                       CONCAT(Individu.prenom, ' ', Individu.nom) AS individu
                 FROM Reparation
                 JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
                 JOIN Velo ON Reparation.code_velo = Velo.code_velo
