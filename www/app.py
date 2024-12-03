@@ -539,7 +539,7 @@ def show_reparation():
                 JOIN Individu ON Reparation.id_individu = Individu.id_individu
                 JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
                 JOIN Facture ON Reparation.id_facture = Facture.id_facture
-                ORDER BY date;   
+                ORDER BY date DESC;   
             '''
     
     mycursor.execute(sql)
