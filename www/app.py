@@ -785,9 +785,8 @@ def render_etat_reparation(id_individu):
     
     # recherche  des statistiques
     mycursor = get_db().cursor()
-    sql =   ''' SELECT ROUND(SUM(Facture.prix_total), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
+    sql =   ''' SELECT ROUND(SUM(Reparation.prix_main_d_oeuvre), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
                 FROM Reparation
-                JOIN Facture ON Reparation.id_facture = Facture.id_facture
                 WHERE Reparation.id_individu = %s
                 GROUP BY Reparation.id_individu;
             '''
