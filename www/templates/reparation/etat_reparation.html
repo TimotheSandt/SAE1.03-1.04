@@ -7,9 +7,6 @@
 
 {% block body %}
 
-    <p> {{ stat.nb }} réparation sur un total de {{ stat.duree_total }} jours pour un total de {{ stat.montant_total }} €</p>
-
-
     <form action="/réparation/etat/" method="POST">
         <label for="selection_individus">Individu :</label>
         <select name="selection_individus" id="selection_individus" required>
@@ -102,9 +99,15 @@
                     {% endfor %}
                 </tbody>
             </table>
+            
+            {% from "location/etat_location.html" import show_statistics %}
+            {% if stat_reparation %}
+                {% show_statistics(stat_reparation) %}
+            {% endif %}
+
 
         </div>
     {% elif individu %}
-        <p>Ancune Location pour {{ individu.nom_prenom }}
+        <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
 {% endblock %}
