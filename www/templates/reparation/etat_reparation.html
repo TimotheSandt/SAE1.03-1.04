@@ -100,9 +100,8 @@
                 </tbody>
             </table>
             
-            {% from "location/etat_location.html" import show_statistics %}
             {% if stat_reparation %}
-                {% show_statistics(stat_reparation) %}
+                <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
             {% endif %}
 
 
