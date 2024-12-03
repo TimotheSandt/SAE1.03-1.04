@@ -455,7 +455,7 @@ def render_etat_location(id_individu):
     
     
     
-    return render_template('location/etat.html', 
+    return render_template('location/etat_location.html', 
                            individu=individu,
                            selection_individus=selection_individus,
                            locataires=locataire_concerne, bailleurs=bailleur_concerne,
@@ -465,7 +465,7 @@ def render_etat_location(id_individu):
 @app.route('/location/etat/', methods=['GET'])
 def show_etat_location():
     selection_individus = get_individu()
-    return render_template('location/etat.html', selection_individus=selection_individus, individu=None)
+    return render_template('location/etat_location.html', selection_individus=selection_individus, individu=None)
 
 @app.route('/location/etat/', methods=['POST'])
 def valid_etat_location():
