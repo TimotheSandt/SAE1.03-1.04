@@ -6,61 +6,61 @@
 
 {% block body %}
 <section>
-    <header>
-        <h1>État des Vélos</h1>
-    </header>
+    <h1>État des Vélos</h1>
 
-    <form action="/etat" method="GET">
-        <div>
-            <label for="date_debut">Date de début :</label>
-            <input type="date" id="date_debut" name="date_debut" required>
-        </div>
-        <div>
-            <label for="date_fin">Date de fin :</label>
-            <input type="date" id="date_fin" name="date_fin" required>
-        </div>
-        <div>
-            <label for="tri">Trier par :</label>
-            <select id="tri" name="tri" required>
-                <option value="montant_total">Montant Total €</option>
-                <option value="nb_locations">Nombre de Locations</option>
-                <option value="duree_totale">Durée Totale (jours)</option>
-            </select>
-        </div>
+    <form action="/velo/etat/" method="POST">
+        <label for="selection_velo">Sélectionnez un vélo :</label>
+        <select id="selection_velo" name="selection_velo" required>
+            <option value="" disabled selected hidden>-- Sélectionnez un vélo --</option>
+            {% for velo in selection_velos %}
+                <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
+            {% endfor %}
+        </select>
         <button type="submit">Afficher l'état</button>
     </form>
 
-    {% if resultats %}
-        <div>
-            <h2>Statistiques pour la période : {{ date_debut }} à {{ date_fin }}</h2>
+    {% if velo %}
+    <h2>Informations sur le Vélo</h2>
+    <p><strong>Libellé :</strong> {{ velo.libelle_velo }}</p>
+    <p><strong>Catégorie :</strong> {{ velo.categorie }}</p>
+    <p><strong>État :</strong> {{ velo.etat }}</p>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Code Vélo</th>
-                        <th>Libellé</th>
-                        <th>Catégorie</th>
-                        <th>Nombre de Locations</th>
-                        <th>Durée Totale (jours)</th>
-                        <th>Montant Total (€)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for velo in resultats %}
-                    <tr>
-                        <td>{{ velo.code_velo }}</td>
-                        <td>{{ velo.libelle_velo }}</td>
-                        <td>{{ velo.categorie }}</td>
-                        <td>{{ velo.nb_locations }}</td>
-                        <td>{{ velo.duree_totale }}</td>
-                        <td>{{ velo.montant_total }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    {% if stats %}
+    <h2>Statistiques Générales</h2>
+    <p><strong>Nombre de Locations :</strong> {{ stats.nb_locations }}</p>
+    <p><strong>Durée Totale :</strong> {{ stats.duree_totale }} jours</p>
+    <p><strong>Montant Total :</strong> {{ stats.montant_total }} €</p>
+    {% endif %}
+
+    <h2>Historique des Locations</h2>
+    {% if locations %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Prix (€)</th>
+                <th>Date Début</th>
+                <th>Date Fin</th>
+                <th>Locataire</th>
+                <th>Bailleur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+            <tr>
+                <td>{{ location.id }}</td>
+                <td>{{ location.prix }}</td>
+                <td>{{ location.date_debut }}</td>
+                <td>{{ location.date_fin }}</td>
+                <td>{{ location.locataire }}</td>
+                <td>{{ location.bailleur }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% else %}
-        <p>Aucune donnée disponible pour la période spécifiée.</p>
+    <p>Aucune location enregistrée pour ce vélo.</p>
+    {% endif %}
     {% endif %}
 </section>
 {% endblock %}

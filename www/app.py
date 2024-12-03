@@ -928,55 +928,77 @@ def delete_velo():
     return redirect(url_for('show_velo'))
 
 
-def render_etat_velo(resultats=None, date_debut=None, date_fin=None, velos=None):
-    if velos is None:
-        mycursor = get_db().cursor()
-        sql = '''SELECT code_velo, libelle_velo FROM Velo ORDER BY libelle_velo;'''
-        mycursor.execute(sql)
-        velos = mycursor.fetchall()
-    return render_template('velo/etat_velo.html', resultats=resultats, date_debut=date_debut, date_fin=date_fin, velos=velos)
-
-
-@app.route('/velo/etat', methods=['GET'])
-def show_etat_velo():
-    return render_etat_velo()
-
-
-@app.route('/velo/etat', methods=['POST'])
-def valid_etat_velo():
-    date_debut = request.form.get('date_debut')
-    date_fin = request.form.get('date_fin')
-    code_velo = request.form.get('selection_velo')
-    tri = request.form.get('tri', 'montant_total')
-
-    if not (date_debut and date_fin and code_velo):
-        flash("Tous les champs doivent être remplis.", "danger")
-        return redirect('/velo/etat')
+def render_etat_velo(id_velo):
+    selection_velos = get_velos()
 
     mycursor = get_db().cursor()
-    sql = f'''
-        SELECT 
-            Velo.code_velo, 
-            Velo.libelle_velo, 
-            COUNT(Location.id_location) AS nb_locations, 
-            SUM(Location.duree) AS duree_totale, 
-            SUM(Location.prix) AS montant_total 
-        FROM 
-            Velo 
-        JOIN 
-            Location ON Velo.code_velo = Location.code_velo 
-        WHERE 
-            Velo.code_velo = %s 
-            AND Location.date_location BETWEEN %s AND %s 
-        GROUP BY 
-            Velo.code_velo 
-        ORDER BY 
-            {tri} DESC;
+    sql = '''
+        SELECT Velo.code_velo, Velo.libelle_velo, 
+               Categorie_velo.libelle_categorie_velo AS categorie,
+               Etat.libelle_etat AS etat
+        FROM Velo
+        JOIN Categorie_velo ON Velo.code_categorie_velo = Categorie_velo.code_categorie_velo
+        JOIN Etat ON Velo.code_etat = Etat.code_etat
+        WHERE Velo.code_velo = %s;
     '''
-    mycursor.execute(sql, (code_velo, date_debut, date_fin))
-    resultats = mycursor.fetchall()
+    values = (id_velo,)
+    mycursor.execute(sql, values)
+    velo = mycursor.fetchone()
 
-    return render_etat_velo(resultats=resultats, date_debut=date_debut, date_fin=date_fin)
+    sql = '''
+        SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix,
+               Location.date_location AS date_debut, 
+               DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
+               CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
+               CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
+        FROM Location
+        JOIN Individu AS loc ON Location.locataire = loc.id_individu
+        JOIN Individu AS bai ON Location.bailleur = bai.id_individu
+        WHERE Location.code_velo = %s
+        ORDER BY Location.date_location;
+    '''
+    mycursor.execute(sql, values)
+    locations = mycursor.fetchall()
+
+    sql = '''
+        SELECT ROUND(SUM(Location.prix), 2) AS montant_total,
+               COUNT(Location.id_location) AS nb_locations,
+               SUM(Location.duree) AS duree_totale
+        FROM Location
+        WHERE Location.code_velo = %s
+        GROUP BY Location.code_velo;
+    '''
+    mycursor.execute(sql, values)
+    stats = mycursor.fetchone()
+
+    return render_template(
+        'velo/etat_velo.html',
+        velo=velo,
+        selection_velos=selection_velos,
+        locations=locations,
+        stats=stats
+    )
+
+@app.route('/velo/etat/', methods=['GET'])
+def show_etat_velo():
+    selection_velos = get_velos()
+    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
+
+@app.route('/velo/etat/', methods=['POST'])
+def valid_etat_velo():
+    id_velo = request.form.get('selection_velo')
+
+    if id_velo is None:
+        return redirect('/velo/etat/')
+
+    return render_etat_velo(id_velo)
+
+def get_velos():
+    mycursor = get_db().cursor()
+    sql = ''' SELECT code_velo, libelle_velo FROM Velo ORDER BY libelle_velo; '''
+    mycursor.execute(sql)
+    return mycursor.fetchall()
+
 
 #####################
 
