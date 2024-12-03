@@ -811,7 +811,7 @@ def render_etat_reparation(id_individu):
 @app.route('/reparation/etat/', methods=['GET'])
 def show_etat_reparation():
     selection_individus = get_individu()
-    return render_template('reparation/etat.html', selection_individus=selection_individus, individu=None)
+    return render_template('reparation/etat_reparation.html', selection_individus=selection_individus, individu=None)
 
 
 @app.route('/reparation/etat/', methods=['POST'])
