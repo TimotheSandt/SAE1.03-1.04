@@ -48,7 +48,7 @@
     </form>
 
 
-    {% if individu and location %}
+    {% if individu and locations %}
         <div>
             <h1>Etat pour {{ individu.nom_prenom }} </h1>
 
@@ -116,6 +116,10 @@
 
             {% if stat_locataire != None %}
                 {{ show_statistics(stat_locataire) }}
+            {% endif %}
+
+            {% if stat_bailleur != None %}
+                {{ show_statistics(stat_bailleur) }}
             {% endif %}
 
         </div>
