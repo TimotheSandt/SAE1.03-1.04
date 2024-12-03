@@ -334,6 +334,8 @@ def get_individu():
     
     return individu
 
+
+# à faire
 def get_best_worst_individu(classification, type_individu):
     assert type_individu in ['locataire', 'bailleur'], "Type d'individu inconnu"
     
