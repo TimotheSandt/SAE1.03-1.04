@@ -1,40 +1,36 @@
-{% macro show_statistics(stat)%}
-    <p> {{ stat.nb }} locations sur un total de {{ stat.duree_total }} jours pour un total de {{ stat.montant_total }} €</p>
+{% macro show_statistics(stat) %}
+    <p>
+        {{ stat.nb }} locations sur un total de {{ stat.duree_total }} jours pour un total de {{ stat.montant_total }} €
+    </p>
 {% endmacro %}
 
 {% macro show_individus_concerne(individus) %}
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>id</th>
-                <th>Nom</th>
-                <th>Nombre de location</th>
-                <th>Montant</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for individu in individus %}
-            <tr>
-                <td>{{ individu.id }}</td>
-                <td>{{ individu.nom_prenom }}</td>
-                <td>{{ individu.nb }}</td>
-                <td>{{ individu.montant }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% for individu in individus %}
+        <div class="card card-flex">
+            <div class="titre">
+                <h4>{{ individu.nom_prenom }}</h4>
+                <p class="id">id:{{ individu.id }}</p>
+            </div>
+            <div class="info">
+                <p>{{ individu.nb }} locations</p>
+                <p>{{ individu.montant }} €</p>
+            </div>
+        </div>
+    {% endfor %}
 {% endmacro %}
-
 
 {% extends "layout.html" %}
 
-{% block title %}
-    Location
+{% block title %}Location{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/etat.css') }}">
 {% endblock %}
 
-
 {% block body %}
-    <form action="/location/etat/" method="POST">
+    <h1>État des Locations</h1>
+
+    <form action="/location/etat/" method="POST" class="form-group">
         <label for="selection_individus">Individu :</label>
         <select name="selection_individus" id="selection_individus" required>
             <option value="" disabled selected hidden>Veuillez sélectionner un individu</option>
@@ -44,40 +40,72 @@
                 <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Voir l'état</button>
+        <button type="submit" class="btn">Voir l'état</button>
     </form>
 
-
     {% if individu and locations %}
-        <div>
-            <h1>Etat pour {{ individu.nom_prenom }} </h1>
+        <div class="etat">
+            <h2>État pour {{ individu.nom_prenom }}</h2>
 
-            <h3>Vélo</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Code</th>
-                        <th>Libellé</th>
-                        <th>Nombre de location</th>
-                        <th>duree total</th>
-                        <th>Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div id="statistics">
+                {% if stat_locataire != None %}
+                    <h3>Statistiques Locataire</h3>
+                    {{ show_statistics(stat_locataire) }}
+                {% endif %}
+
+                {% if stat_bailleur != None %}
+                    <h3>Statistiques Bailleur</h3>
+                    {{ show_statistics(stat_bailleur) }}
+                {% endif %}
+            </div>
+
+            <h3>Liste des vélos concernés par {{ individu.nom_prenom }}</h3>
+            <div class="card-container">
                 {% for velo in velos %}
-                    <tr>
-                        <td>{{ velo.code_velo }}</td>
-                        <td>{{ velo.libelle_velo }}</td>
-                        <td>{{ velo.nb }}</td>
-                        <td>{{ velo.duree }}</td>
-                        <td>{{ velo.montant }}</td>
-                    </tr>
+                    <div class="card">
+                        <div class="titre">
+                            <h4>{{ velo.libelle_velo }}</h4>
+                            <p class="id">id:{{ velo.code_velo }}</p>
+                        </div>
+                        <p>Le vélo a été loué <strong>{{ velo.nb }} fois</strong> durant <strong>{{ velo.duree }} jours</strong></p>
+                        <p>Il a rapporté <strong>{{ velo.montant }} €</strong> à l'association VéloCampus</p>
+                    </div>
                 {% endfor %}
-                </tbody>
-            </table>
+            </div>
 
-            <div class="etat">
-                <div class="individu">
+            <div class="two-column-layout">
+                <div id="location">
+                    <h3>Locations Effectuées</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Prix</th>
+                                    <th>Date début</th>
+                                    <th>Date fin</th>
+                                    <th>Vélo</th>
+                                    <th>Locataire</th>       
+                                    <th>Bailleur</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ligne in locations %}
+                                <tr>
+                                    <td>{{ ligne.id }}</td>
+                                    <td>{{ ligne.prix }}</td>
+                                    <td>{{ ligne.date_debut }}</td>
+                                    <td>{{ ligne.date_fin }}</td>
+                                    <td>{{ ligne.velo }}</td>
+                                    <td>{{ ligne.locataire }}</td>
+                                    <td>{{ ligne.bailleur }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="individu">
                     {% if bailleurs %}
                         <h3>Bailleur</h3>
                         {{ show_individus_concerne(bailleurs) }}
@@ -88,49 +116,10 @@
                         {{ show_individus_concerne(locataires) }}
                     {% endif %}
                 </div>
-
-                <h3>Location Effectuée</h3>
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>id</th>
-                            <th>prix</th>
-                            <th>date début</th>
-                            <th>date fin</th>
-                            <th>velo</th>
-                            <th>locataire</th>       
-                            <th>bailleur</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ligne in locations %}
-                        <tr>
-                                <td>{{ ligne.id }}</td>
-                                <td>{{ ligne.prix }}</td>
-                                <td>{{ ligne.date_debut }}</td>
-                                <td>{{ ligne.date_fin }}</td>
-                                <td>{{ ligne.velo }}</td>
-                                <td>{{ ligne.locataire }}</td>
-                                <td>{{ ligne.bailleur }}</td>
-                                <td>{{ ligne.station_id }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
             </div>
-
-            
-
-            {% if stat_locataire != None %}
-                {{ show_statistics(stat_locataire) }}
-            {% endif %}
-
-            {% if stat_bailleur != None %}
-                {{ show_statistics(stat_bailleur) }}
-            {% endif %}
-
         </div>
     {% elif individu %}
-        <p>Ancune Location pour {{ individu.nom_prenom }}
+        <p>Aucune Location pour {{ individu.nom_prenom }}</p>
     {% endif %}
 {% endblock %}
+

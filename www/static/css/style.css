@@ -1,55 +1,83 @@
 main {
-    margin: 0 5%;
-    padding: 5px 20px;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: #2b6891;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2b6891;
+}
+
+nav {
+    margin: 0;
+    padding: 10px;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background-color: #2b6891;
+    transition: width 0.3s ease-in;
+}
+
+nav a:hover::after {
+    width: 100%;
 }
 
 
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1, h2, h3, h4 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
 th, td {
-    padding: 8px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 thead {
-    background-color: rgb(189, 192, 187);
+    background-color: #2c3e50;
+    color: #fff;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
 
 tbody tr:hover {
-    background-color:#f5f5f5;
+    background-color: #e6e6e6;
 }
 
-h1 {
-    text-align: center;
-    color: #4CAF50;
-}
-
-a {
-    color: #4CAF50;
-    padding: 5px;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-a.edit_button {
-    background-color: rgb(236, 182, 63);
-    color: white;
-    transition: 0.5s ease-in-out;
-}
-
-a.delete_button {
-    background-color: rgb(177, 41, 41);
-    color: white;
-    transition: 0.5s ease-in-out;
-}
-
-a.edit_button:hover {
-    background-color: rgb(233, 233, 171);
-    color: black;
-}
-
-a.delete_button:hover {
-    background-color: rgb(224, 175, 175);
-    color: black;
-}
-
-    
