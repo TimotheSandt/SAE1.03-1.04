@@ -28,8 +28,8 @@ Réparation
     <label for="type_reparation">Type de réparation : </label>
     <select name="type_reparation" id="type_reparation" required>
         {% for type_reparation in types_reparation %}
-            <option value="{{ type_reparation.id }}"
-                {% if type_reparation.id == reparation.code_type_reparation %} selected {% endif %}>
+            <option value="{{ type_reparation.code_type_reparation }}"
+                {% if type_reparation.code_type_reparation == reparation.code_type_reparation %} selected {% endif %}>
                 {{ type_reparation.libelle_type_reparation }} 
             </option>
         {% endfor %}
