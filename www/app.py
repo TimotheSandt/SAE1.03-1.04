@@ -619,7 +619,7 @@ def edit_reparation():
     mycursor = get_db().cursor()
     sql =   ''' SELECT code_reparation AS id, 
                        date_reparation AS date, 
-                       duree + 1 AS duree, 
+                       duree_reparation + 1 AS duree, 
                        description_reparation AS description, 
                        prix_main_d_oeuvre AS prix, 
                        id_facture,
