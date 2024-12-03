@@ -76,7 +76,9 @@ def activate_db_options(db):
 def show_accueil():
     return render_template('layout.html')
 
+################################
 ########### Individu ###########
+################################
 
 @app.route('/compte/add', methods=['GET'])
 def add_individu():
@@ -491,6 +493,31 @@ def valid_etat_location():
     print(individu)
     return render_etat_location(individu)
 
+
+#######################################
+########### Type reparation ###########
+#######################################
+
+@app.route('/type_reparation/add', methods=['GET'])
+def add_type_reparation():
+    return render_template('type_reparation/add_type_reparation.html')
+
+
+@app.route('/type_reparation/add', methods=['POST'])
+def valid_add_type_reparation():
+    mycursor = get_db().cursor()
+    sql =   ''' INSERT INTO Type_reparation(libelle_type_reparation)
+                VALUES (%s);
+            '''
+    libelle = request.form['libelle']
+    values = (libelle,)
+    
+    mycursor.execute(sql, values)
+    get_db().commit()
+    return redirect('/')
+
+
+
 ##################################
 ########### Réparation ###########
 ##################################
@@ -783,7 +810,7 @@ def render_etat_reparation(id_individu):
     reparations = mycursor.fetchall()
     
     
-    # recherche  des statistiques
+    # recherche des statistiques
     mycursor = get_db().cursor()
     sql =   ''' SELECT ROUND(SUM(Reparation.prix_main_d_oeuvre), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
                 FROM Reparation

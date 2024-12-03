@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Type de Réparation
+{% endblock %}
+
+
+{% block body %}
+
+
+<h3>Créer un type de réparation</h3>
+
+<form action="/type_reparation/add" method="POST">
+
+    <label for="libelle">Libellé : </label>
+    <input type="text" name="libelle" id="libelle" required>
+
+    <button type="submit">Créer un type de réparation</button>
+    
+</form>
+
+{% endblock %}
