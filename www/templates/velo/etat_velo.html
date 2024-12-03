@@ -22,15 +22,41 @@
 
         {% if velo %}
         <h2>Informations sur le Vélo</h2>
-        <p><strong>Libellé :</strong> {{ velo.libelle_velo }}</p>
-        <p><strong>Catégorie :</strong> {{ velo.categorie }}</p>
-        <p><strong>État :</strong> {{ velo.etat }}</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Libellé</th>
+                    <th>Catégorie</th>
+                    <th>État</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ velo.libelle_velo }}</td>
+                    <td>{{ velo.categorie }}</td>
+                    <td>{{ velo.etat }}</td>
+                </tr>
+            </tbody>
+        </table>
 
         {% if stats %}
         <h2>Statistiques Générales</h2>
-        <p><strong>Nombre de Locations :</strong> {{ stats.nb_locations }}</p>
-        <p><strong>Durée Totale :</strong> {{ stats.duree_totale }} jours</p>
-        <p><strong>Montant Total :</strong> {{ stats.montant_total }} €</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre de Locations</th>
+                    <th>Durée Totale (jours)</th>
+                    <th>Montant Total (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ stats.nb_locations }}</td>
+                    <td>{{ stats.duree_totale }}</td>
+                    <td>{{ stats.montant_total }}</td>
+                </tr>
+            </tbody>
+        </table>
         {% endif %}
 
         <h2>Individus Associés</h2>
