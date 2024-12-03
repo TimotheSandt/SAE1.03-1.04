@@ -926,6 +926,58 @@ def delete_velo():
     get_db().commit()
     flash("Vélo supprimé avec succès !", "success")
     return redirect(url_for('show_velo'))
+
+
+def render_etat_velo(resultats=None, date_debut=None, date_fin=None, velos=None):
+    if velos is None:
+        mycursor = get_db().cursor()
+        sql = '''SELECT code_velo, libelle_velo FROM Velo ORDER BY libelle_velo;'''
+        mycursor.execute(sql)
+        velos = mycursor.fetchall()
+    return render_template('velo/etat_velo.html', resultats=resultats, date_debut=date_debut, date_fin=date_fin, velos=velos)
+
+
+@app.route('/velo/etat', methods=['GET'])
+def show_etat_velo():
+    return render_etat_velo()
+
+
+@app.route('/velo/etat', methods=['POST'])
+def valid_etat_velo():
+    date_debut = request.form.get('date_debut')
+    date_fin = request.form.get('date_fin')
+    code_velo = request.form.get('selection_velo')
+    tri = request.form.get('tri', 'montant_total')
+
+    if not (date_debut and date_fin and code_velo):
+        flash("Tous les champs doivent être remplis.", "danger")
+        return redirect('/velo/etat')
+
+    mycursor = get_db().cursor()
+    sql = f'''
+        SELECT 
+            Velo.code_velo, 
+            Velo.libelle_velo, 
+            COUNT(Location.id_location) AS nb_locations, 
+            SUM(Location.duree) AS duree_totale, 
+            SUM(Location.prix) AS montant_total 
+        FROM 
+            Velo 
+        JOIN 
+            Location ON Velo.code_velo = Location.code_velo 
+        WHERE 
+            Velo.code_velo = %s 
+            AND Location.date_location BETWEEN %s AND %s 
+        GROUP BY 
+            Velo.code_velo 
+        ORDER BY 
+            {tri} DESC;
+    '''
+    mycursor.execute(sql, (code_velo, date_debut, date_fin))
+    resultats = mycursor.fetchall()
+
+    return render_etat_velo(resultats=resultats, date_debut=date_debut, date_fin=date_fin)
+
 #####################
 
 if __name__ == '__main__':
