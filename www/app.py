@@ -505,11 +505,11 @@ def add_type_reparation():
 
 @app.route('/type_reparation/add', methods=['POST'])
 def valid_add_type_reparation():
+    libelle = request.form['libelle']
     mycursor = get_db().cursor()
     sql =   ''' INSERT INTO Type_reparation(libelle_type_reparation)
                 VALUES (%s);
             '''
-    libelle = request.form['libelle']
     values = (libelle,)
     
     mycursor.execute(sql, values)
