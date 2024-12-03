@@ -29,7 +29,7 @@ CREATE TABLE Individu(
 CREATE TABLE Piece(
    code_piece INT AUTO_INCREMENT,
    type_piece VARCHAR(50),
-   prix DECIMAL(19,2),
+   prix DECIMAL(19,4),
    PRIMARY KEY(code_piece)
 );
 
