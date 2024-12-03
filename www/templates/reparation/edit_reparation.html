@@ -16,7 +16,7 @@ Réparation
     <input type="hidden" name="facture" value="{{ reparation.id_facture }}" id="facture" required>
 
     <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="1" required>
+    <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="0.01" required>
 
     <label for="date">Date début reparation : </label>
     <input type="date" name="date" id="date" value="{{ reparation.date}}" required>
@@ -35,7 +35,7 @@ Réparation
         {% endfor %}
     </select>
 
-    
+
     <label for="description">Description : </label>
     <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
 
