@@ -14,20 +14,7 @@ Réparation
 
     <input type="hidden" name="id" value="{{ reparation.id }}" id="id" required>
     <input type="hidden" name="facture" value="{{ reparation.id_facture }}" id="facture" required>
-
-    <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="0.01" required>
-
-    <label for="facture">Facture : </label>
-    <input type="number" name="facture" id="facture" value="{{ reparation.facture }}" step="0.01" required>
-
-    <label for="date">Date début reparation : </label>
-    <input type="date" name="date" id="date" value="{{ reparation.date}}" required>
-
-    <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" value="{{ reparation.duree }}" required>
-
-
+    
     <label for="type_reparation">Type de réparation : </label>
     <select name="type_reparation" id="type_reparation" required>
         {% for type_reparation in types_reparation %}
@@ -38,21 +25,15 @@ Réparation
         {% endfor %}
     </select>
 
+    <label for="date">Date début réparation : </label>
+    <input type="date" name="date" id="date" value="{{ reparation.date}}" required>
 
-    <label for="description">Description : </label>
-    <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
+    <label for="duree">Durée : </label>
+    <input type="number" name="duree" id="duree" value="{{ reparation.duree }}" required>
 
-
-
-    <label for="individu">Individu : </label>
-    <select name="individu" id="individu" required>
-        {% for individu in individus %}
-            <option value="{{ individu.id }}" 
-                {% if individu.id == reparation.id_individu %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
+    
+    <label for="prix">Prix : </label>
+    <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="0.01" required>
     
     
     <label for="velo">Velo : </label>
@@ -64,8 +45,22 @@ Réparation
             </option>
         {% endfor %}
     </select>
+    
 
+    <label for="individu">Individu : </label>
+    <select name="individu" id="individu" required>
+        {% for individu in individus %}
+            <option value="{{ individu.id }}" 
+            {% if individu.id == reparation.id_individu %} selected {% endif %}>
+                {{ individu.nom_prenom }}
+            </option>
+        {% endfor %}
+    </select>
+    
 
+    <label for="description">Description : </label>
+    <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
+    
     <button type="submit">Modifier</button>
     
 </form>

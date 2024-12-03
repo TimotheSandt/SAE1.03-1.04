@@ -731,7 +731,7 @@ def render_etat_reparation(id_individu):
             '''
     values = (id_individu,)
     mycursor.execute(sql, values)
-    individu = mycursor.fetchone()
+    individus = mycursor.fetchone()
     
     # recherche des types de réparation
     mycursor = get_db().cursor()
@@ -798,7 +798,7 @@ def render_etat_reparation(id_individu):
     
     
     return render_template('reparation/etat_reparation.html', 
-                           individu=individu,
+                           individus=individus,
                            selection_individus=selection_individus,
                            type_reparation_concerne=type_reparation_concerne, 
                            velos_concerne=velos_concerne,
