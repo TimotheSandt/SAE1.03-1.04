@@ -821,17 +821,6 @@ def valid_etat_reparation():
     if individu is None:
         return redirect('/reparation/etat/')
     
-    
-    if individu == 'best_locataire':
-        individu = get_best_worst_individu('best', 'locataire')
-    elif individu == 'worst_locataire':
-        individu = get_best_worst_individu('pire', 'locataire')
-    elif individu == 'best_bailleur':
-        individu = get_best_worst_individu('best', 'bailleur')
-    elif individu == 'worst_bailleur':
-        individu = get_best_worst_individu('pire', 'bailleur')
-    
-    print(individu)
     return render_etat_reparation(individu)
 
 
