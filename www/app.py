@@ -561,10 +561,6 @@ def add_reparation():
     return render_add_reparation()
 
 
-def check_date_conflict(date):
-    today = date.today()
-    return date > today
-
 
 @app.route('/reparation/add', methods=['POST'])
 def valid_add_reparation():
