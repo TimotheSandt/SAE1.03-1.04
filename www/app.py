@@ -571,12 +571,12 @@ def valid_add_reparation():
     type_reparation = request.form['type_reparation']
     velo = request.form['velo']
     individu = request.form['individu']
-    print("date :", date)
-    print("duree :", duree)
-    print("description :", description)
-    print("type_reparation :", type_reparation)
-    print("velo :", velo)
-    print("individu :", individu)
+    # print("date :", date)
+    # print("duree :", duree)
+    # print("description :", description)
+    # print("type_reparation :", type_reparation)
+    # print("velo :", velo)
+    # print("individu :", individu)
 
     ### Ajout de la facture
     mycursor = get_db().cursor()
@@ -649,6 +649,7 @@ def edit_reparation():
     mycursor.execute(sql)
     individus = mycursor.fetchall()
     
+    # recherche des types de réparation
     sql =   ''' SELECT code_type_reparation, libelle_type_reparation
                 FROM Type_reparation;
             '''
