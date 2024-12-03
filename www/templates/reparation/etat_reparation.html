@@ -59,16 +59,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for individu in individus %}
+                {% for individu_concerne in individus_concerne %}
                     <tr>
-                        <td>{{ individu.id }}</td>
-                        <td>{{ individu.nom_prenom }}</td>
-                        <td>{{ individu.nb }}</td>
-                        <td>{{ individu.montant }}</td>
+                        <td>{{ individu_concerne.id }}</td>
+                        <td>{{ individu_concerne.nom_prenom }}</td>
+                        <td>{{ individu_concerne.nb }}</td>
+                        <td>{{ individu_concerne.montant }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+
 
 
             <h3>Réparation effectuée</h3>
