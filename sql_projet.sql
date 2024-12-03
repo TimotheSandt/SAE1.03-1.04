@@ -53,14 +53,14 @@ CREATE TABLE Categorie_velo(
 
 CREATE TABLE Facture(
    id_facture INT AUTO_INCREMENT,
-   prix_total DECIMAL(19,2),
+   prix_total DECIMAL(19,4),
    PRIMARY KEY(id_facture)
 );
 
 CREATE TABLE Velo(
    code_velo INT AUTO_INCREMENT,
    libelle_velo VARCHAR(50),
-   prix DECIMAL(19,2),
+   prix DECIMAL(19,4),
    date_achat DATE,
    code_categorie_velo INT NOT NULL,
    code_etat INT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE Reparation(
    date_reparation DATE,
    duree_reparation INT,
    description_reparation TEXT,
-   prix_main_d_oeuvre DECIMAL(19,2),
+   prix_main_d_oeuvre DECIMAL(19,4),
    id_facture INT NOT NULL,
    code_type_reparation INT NOT NULL,
    code_velo INT NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE Reparation(
 
 CREATE TABLE Location(
    ID_location INT AUTO_INCREMENT,
-   prix DECIMAL(19,2),
+   prix DECIMAL(19,4),
    duree INT,
    date_location DATE,
    id_facture INT NOT NULL,
