@@ -1,0 +1,55 @@
+main {
+    margin: 0 5%;
+    padding: 5px 20px;
+}
+
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+thead {
+    background-color: rgb(189, 192, 187);
+}
+
+tbody tr:hover {
+    background-color:#f5f5f5;
+}
+
+h1 {
+    text-align: center;
+    color: #4CAF50;
+}
+
+a {
+    color: #4CAF50;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+a.edit_button {
+    background-color: rgb(236, 182, 63);
+    color: white;
+    transition: 0.5s ease-in-out;
+}
+
+a.delete_button {
+    background-color: rgb(177, 41, 41);
+    color: white;
+    transition: 0.5s ease-in-out;
+}
+
+a.edit_button:hover {
+    background-color: rgb(233, 233, 171);
+    color: black;
+}
+
+a.delete_button:hover {
+    background-color: rgb(224, 175, 175);
+    color: black;
+}
+
+    

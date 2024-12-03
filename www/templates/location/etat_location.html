@@ -76,41 +76,48 @@
                 </tbody>
             </table>
 
-            
-            <h3>Bailleur</h3>
-            {{ show_individus_concerne(bailleurs) }}
+            <div class="etat">
+                <div class="individu">
+                    {% if bailleurs %}
+                        <h3>Bailleur</h3>
+                        {{ show_individus_concerne(bailleurs) }}
+                    {% endif %}
+                    
+                    {% if locataires %}
+                        <h3>Locataire</h3>
+                        {{ show_individus_concerne(locataires) }}
+                    {% endif %}
+                </div>
 
-            <h3>Locataire</h3>
-            {{ show_individus_concerne(locataires) }}
-
-            <h3>Location Effectuée</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>id</th>
-                        <th>prix</th>
-                        <th>date début</th>
-                        <th>date fin</th>
-                        <th>velo</th>
-                        <th>locataire</th>       
-                        <th>bailleur</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ligne in locations %}
-                    <tr>
-                            <td>{{ ligne.id }}</td>
-                            <td>{{ ligne.prix }}</td>
-                            <td>{{ ligne.date_debut }}</td>
-                            <td>{{ ligne.date_fin }}</td>
-                            <td>{{ ligne.velo }}</td>
-                            <td>{{ ligne.locataire }}</td>
-                            <td>{{ ligne.bailleur }}</td>
-                            <td>{{ ligne.station_id }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <h3>Location Effectuée</h3>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>id</th>
+                            <th>prix</th>
+                            <th>date début</th>
+                            <th>date fin</th>
+                            <th>velo</th>
+                            <th>locataire</th>       
+                            <th>bailleur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ligne in locations %}
+                        <tr>
+                                <td>{{ ligne.id }}</td>
+                                <td>{{ ligne.prix }}</td>
+                                <td>{{ ligne.date_debut }}</td>
+                                <td>{{ ligne.date_fin }}</td>
+                                <td>{{ ligne.velo }}</td>
+                                <td>{{ ligne.locataire }}</td>
+                                <td>{{ ligne.bailleur }}</td>
+                                <td>{{ ligne.station_id }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
             
 

@@ -5,6 +5,7 @@ Location
 {% endblock %}
 
 
+
 {% block body %}
 
 
@@ -23,8 +24,8 @@ Location
             <th>date fin</th>
             <th>velo</th>
             <th>locataire</th>
-            <th>bailleur</th>          
-            <td></td>
+            <th>bailleur</th>   
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -38,10 +39,9 @@ Location
                   <td>{{ ligne.velo }}</td>
                   <td>{{ ligne.locataire }}</td>
                   <td>{{ ligne.bailleur }}</td>
-                  <td>{{ ligne.station_id }}</td>
                   <td>
-                      <a href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
-                      <a href="/location/delete?id={{ ligne.id }}" >supprimer</a>
+                      <a class="edit_button" href="/location/edit?id={{ ligne.id }}">editer</a>&nbsp;
+                      <a class="delete_button" href="/location/delete?id={{ ligne.id }}" >supprimer</a>
                   </td>
            </tr>
         {% endfor %}
