@@ -107,7 +107,7 @@ def valid_add_individu():
 @app.route('/location/show', methods=['GET'])
 def show_location():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.id_location AS id, Location.prix, 
+    sql =   ''' SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix, 
                     Location.date_location AS date_debut, 
                     DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
                     Velo.libelle_velo AS velo, 
@@ -345,7 +345,7 @@ def get_best_worst_individu(classification, type_individu):
         raise ValueError("Classification inconnue")
     
     mycursor = get_db().cursor()
-    sql =   f''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, SUM(Facture.prix_total) AS montant
+    sql =   f''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Location
                 JOIN Individu ON Location.{type_individu} = Individu.id_individu
                 JOIN Facture ON Location.id_facture = Facture.id_facture
@@ -371,7 +371,7 @@ def render_etat_location(id_individu):
     
     # recherche des bailleurs
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, COUNT(Individu.id_individu) as nb, SUM(Facture.prix_total) AS montant
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, COUNT(Individu.id_individu) as nb, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Location
                 JOIN Individu ON Location.bailleur = Individu.id_individu
                 JOIN Facture ON Location.id_facture = Facture.id_facture
@@ -384,7 +384,7 @@ def render_etat_location(id_individu):
     
     # recherche des locataires
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, COUNT(Individu.id_individu) as nb, SUM(Facture.prix_total) AS montant
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, COUNT(Individu.id_individu) as nb, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Location
                 JOIN Individu ON Location.locataire = Individu.id_individu
                 JOIN Facture ON Location.id_facture = Facture.id_facture
@@ -397,7 +397,7 @@ def render_etat_location(id_individu):
     
     # recherche des velos
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Location.duree + 1) AS duree, SUM(Facture.prix_total) AS montant
+    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Location.duree + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Velo
                 JOIN Location ON Velo.code_velo = Location.code_velo
                 JOIN Facture ON Location.id_facture = Facture.id_facture
@@ -411,7 +411,7 @@ def render_etat_location(id_individu):
     
     
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.id_location AS id, Location.prix, 
+    sql =   ''' SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix, 
                     Location.date_location AS date_debut, 
                     DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
                     Velo.libelle_velo AS velo, 
@@ -432,7 +432,7 @@ def render_etat_location(id_individu):
     
     # recherche  des statistiques
     mycursor = get_db().cursor()
-    sql =   ''' SELECT SUM(Facture.prix_total) AS montant_total, COUNT(Location.id_location) AS nb, SUM(Location.duree + 1) AS duree_total
+    sql =   ''' SELECT ROUND(SUM(Facture.prix_total), 2) AS montant_total, COUNT(Location.id_location) AS nb, SUM(Location.duree + 1) AS duree_total
                 FROM Location
                 JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE Location.locataire = %s
@@ -443,7 +443,7 @@ def render_etat_location(id_individu):
     stat_locataire = mycursor.fetchone()
     
     mycursor = get_db().cursor()
-    sql =   ''' SELECT SUM(Facture.prix_total) AS montant_total, COUNT(Location.id_location) AS nb, SUM(Location.duree + 1) AS duree_total
+    sql =   ''' SELECT ROUND(SUM(Facture.prix_total), 2) AS montant_total, COUNT(Location.id_location) AS nb, SUM(Location.duree + 1) AS duree_total
                 FROM Location
                 JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE Location.bailleur = %s
@@ -498,8 +498,8 @@ def show_reparation():
                        Reparation.date_reparation AS date, 
                        Reparation.duree_reparation AS duree,
                        Reparation.description_reparation AS description,
-                       Reparation.prix_main_d_oeuvre AS prix, 
-                       Facture.prix_total AS facture,
+                       ROUND(Reparation.prix_main_d_oeuvre, 2) AS prix, 
+                       ROUND(Facture.prix_total, 2) AS facture,
                        Type_reparation.libelle_type_reparation AS type_reparation,
                        Velo.libelle_velo AS velo,
                        Individu.nom AS individu
@@ -723,7 +723,7 @@ def delete_reparation():
 def show_velo():
     mycursor = get_db().cursor()
     sql = '''
-        SELECT Velo.code_velo AS id, Velo.libelle_velo, Velo.prix, Velo.date_achat,
+        SELECT Velo.code_velo AS id, Velo.libelle_velo, ROUND(Velo.prix, 2) AS prix, Velo.date_achat,
                Categorie_velo.libelle_categorie_velo AS categorie,
                Etat.libelle_etat AS etat
         FROM Velo
