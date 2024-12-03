@@ -5,88 +5,90 @@
 {% endblock %}
 
 {% block body %}
-<section>
-    <h1>État des Vélos</h1>
+<main>
+    <section>
+        <h1>État des Vélos</h1>
 
-    <form action="/velo/etat/" method="POST">
-        <label for="selection_velo">Sélectionnez un vélo :</label>
-        <select id="selection_velo" name="selection_velo" required>
-            <option value="" disabled selected hidden> Sélectionnez un vélo </option>
-            {% for velo in selection_velos %}
-                <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Afficher l'état</button>
-    </form>
+        <form action="/velo/etat/" method="POST">
+            <label for="selection_velo">Sélectionnez un vélo :</label>
+            <select id="selection_velo" name="selection_velo" required>
+                <option value="" disabled selected hidden> Sélectionnez un vélo </option>
+                {% for velo in selection_velos %}
+                    <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Afficher l'état</button>
+        </form>
 
-    {% if velo %}
-    <h2>Informations sur le Vélo</h2>
-    <p><strong>Libellé :</strong> {{ velo.libelle_velo }}</p>
-    <p><strong>Catégorie :</strong> {{ velo.categorie }}</p>
-    <p><strong>État :</strong> {{ velo.etat }}</p>
+        {% if velo %}
+        <h2>Informations sur le Vélo</h2>
+        <p><strong>Libellé :</strong> {{ velo.libelle_velo }}</p>
+        <p><strong>Catégorie :</strong> {{ velo.categorie }}</p>
+        <p><strong>État :</strong> {{ velo.etat }}</p>
 
-    {% if stats %}
-    <h2>Statistiques Générales</h2>
-    <p><strong>Nombre de Locations :</strong> {{ stats.nb_locations }}</p>
-    <p><strong>Durée Totale :</strong> {{ stats.duree_totale }} jours</p>
-    <p><strong>Montant Total :</strong> {{ stats.montant_total }} €</p>
-    {% endif %}
+        {% if stats %}
+        <h2>Statistiques Générales</h2>
+        <p><strong>Nombre de Locations :</strong> {{ stats.nb_locations }}</p>
+        <p><strong>Durée Totale :</strong> {{ stats.duree_totale }} jours</p>
+        <p><strong>Montant Total :</strong> {{ stats.montant_total }} €</p>
+        {% endif %}
 
-    <h2>Individus Associés</h2>
-    {% if individus %}
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Nombre de Locations</th>
-                <th>Montant (€)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for individu in individus %}
-            <tr>
-                <td>{{ individu.id }}</td>
-                <td>{{ individu.nom_prenom }}</td>
-                <td>{{ individu.nb }}</td>
-                <td>{{ individu.montant }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>Aucun individu associé à ce vélo.</p>
-    {% endif %}
+        <h2>Individus Associés</h2>
+        {% if individus %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Nombre de Locations</th>
+                    <th>Montant (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for individu in individus %}
+                <tr>
+                    <td>{{ individu.id }}</td>
+                    <td>{{ individu.nom_prenom }}</td>
+                    <td>{{ individu.nb }}</td>
+                    <td>{{ individu.montant }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Aucun individu associé à ce vélo.</p>
+        {% endif %}
 
-    <h2>Historique des Locations</h2>
-    {% if locations %}
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Prix (€)</th>
-                <th>Date Début</th>
-                <th>Date Fin</th>
-                <th>Locataire</th>
-                <th>Bailleur</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for location in locations %}
-            <tr>
-                <td>{{ location.id }}</td>
-                <td>{{ location.prix }}</td>
-                <td>{{ location.date_debut }}</td>
-                <td>{{ location.date_fin }}</td>
-                <td>{{ location.locataire }}</td>
-                <td>{{ location.bailleur }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>Aucune location enregistrée pour ce vélo.</p>
-    {% endif %}
-    {% endif %}
-</section>
+        <h2>Historique des Locations</h2>
+        {% if locations %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prix (€)</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>Locataire</th>
+                    <th>Bailleur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in locations %}
+                <tr>
+                    <td>{{ location.id }}</td>
+                    <td>{{ location.prix }}</td>
+                    <td>{{ location.date_debut }}</td>
+                    <td>{{ location.date_fin }}</td>
+                    <td>{{ location.locataire }}</td>
+                    <td>{{ location.bailleur }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Aucune location enregistrée pour ce vélo.</p>
+        {% endif %}
+        {% endif %}
+    </section>
+</main>
 {% endblock %}
