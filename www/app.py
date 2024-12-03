@@ -321,7 +321,9 @@ def delete_location():
     get_db().commit()
     return redirect(url_for('show_location'))
 
-### Etat
+#####################
+### État location ###
+#####################
 
 def get_individu():
     mycursor = get_db().cursor()
@@ -713,6 +715,122 @@ def delete_reparation():
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_reparation'))
+
+#######################
+### État réparation ###
+#######################
+
+
+def render_etat_reparation(id_individu):
+    selection_individus = get_individu()
+    
+    # recherche de l'individu
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom
+                FROM Individu
+                WHERE Individu.id_individu = %s;
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    individu = mycursor.fetchone()
+    
+    # recherche des types de réparation
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Type_reparation.code_type_reparation, Type_reparation.libelle_type_reparation
+                FROM Type_reparation
+                WHERE Type_reparation.code_type_reparation = %s
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    type_reparation_concerne = mycursor.fetchall()
+    
+    # recherche des velos
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Location.duree + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
+                FROM Velo
+                JOIN Location ON Velo.code_velo = Location.code_velo
+                JOIN Facture ON Location.id_facture = Facture.id_facture
+                WHERE Location.locataire = %s OR Location.bailleur = %s
+                GROUP BY Velo.code_velo, Velo.libelle_velo
+                ORDER BY nb DESC;
+            '''
+    values = (id_individu, id_individu)
+    mycursor.execute(sql, values)
+    velos_concerne = mycursor.fetchall()
+    
+    # recherche des réparations
+    
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT Reparation.code_reparation, 
+                       ROUND(Reparation.prix_main_d_oeuvre, 2) AS prix, 
+                       Reparation.date_reparation AS date_debut, 
+                       Reparation.duree_reparation AS duree, 
+                       Reparation.description_reparation AS description, 
+                       Type_reparation.libelle_type_reparation AS type_reparation, 
+                       Velo.libelle_velo AS velo, 
+                       Individu.nom AS individu
+                FROM Reparation
+                JOIN Type_reparation ON Reparation.code_type_reparation = Type_reparation.code_type_reparation
+                JOIN Velo ON Reparation.code_velo = Velo.code_velo
+                JOIN Individu ON Reparation.id_individu = Individu.id_individu
+                WHERE Reparation.id_individu = %s
+                ORDER BY date_reparation;
+            '''
+    values = (id_individu, )
+    mycursor.execute(sql, values)
+
+    reparations = mycursor.fetchall()
+    
+    
+    # recherche  des statistiques
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT ROUND(SUM(Facture.prix_total), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
+                FROM Reparation
+                JOIN Facture ON Reparation.id_facture = Facture.id_facture
+                WHERE Reparation.id_individu = %s
+                GROUP BY Reparation.id_individu;
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    stat_reparations = mycursor.fetchone()
+    
+    
+    
+    return render_template('reparation/etat_reparation.html', 
+                           individu=individu,
+                           selection_individus=selection_individus,
+                           type_reparation_concerne=type_reparation_concerne, 
+                           velos_concerne=velos_concerne,
+                           reparations=reparations,
+                           stat_reparations=stat_reparations,)
+
+
+
+@app.route('/reparation/etat/', methods=['GET'])
+def show_etat_reparation():
+    selection_individus = get_individu()
+    return render_template('reparation/etat.html', selection_individus=selection_individus, individu=None)
+
+
+@app.route('/reparation/etat/', methods=['POST'])
+def valid_etat_reparation():
+    individu = request.form.get('selection_individus')
+    
+    if individu is None:
+        return redirect('/reparation/etat/')
+    
+    
+    if individu == 'best_locataire':
+        individu = get_best_worst_individu('best', 'locataire')
+    elif individu == 'worst_locataire':
+        individu = get_best_worst_individu('pire', 'locataire')
+    elif individu == 'best_bailleur':
+        individu = get_best_worst_individu('best', 'bailleur')
+    elif individu == 'worst_bailleur':
+        individu = get_best_worst_individu('pire', 'bailleur')
+    
+    print(individu)
+    return render_etat_reparation(individu)
 
 
 ############################
