@@ -753,7 +753,7 @@ def render_etat_reparation(id_individu):
                 GROUP BY Velo.code_velo, Velo.libelle_velo
                 ORDER BY nb DESC;
             '''
-    values = (id_individu, id_individu)
+    values = (id_individu, )
     mycursor.execute(sql, values)
     velos_concerne = mycursor.fetchall()
     
