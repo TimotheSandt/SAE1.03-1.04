@@ -18,34 +18,39 @@
         <button type="submit">Voir l'état</button>
     </form>
 
+    {% if velos %} 
+    
+        <h3>Vélo</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Code</th>
+                    <th>Libellé</th>
+                    <th>Nombre de réparation</th>
+                    <th>Durée total</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for velo in velos %}
+                <tr>
+                    <td>{{ velo.code_velo }}</td>
+                    <td>{{ velo.libelle_velo }}</td>
+                    <td>{{ velo.nb }}</td>
+                    <td>{{ velo.duree }}</td>
+                    <td>{{ velo.montant }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        
+    {% endif %}
+
 
     {% if individu and reparations %}
         <div>
             <h1>Etat pour {{ individu.nom_prenom }} </h1>
 
-            <!-- <h3>Vélo</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Code</th>
-                        <th>Libellé</th>
-                        <th>Nombre de réparation</th>
-                        <th>Durée total</th>
-                        <th>Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for velo in velos %}
-                    <tr>
-                        <td>{{ velo.code_velo }}</td>
-                        <td>{{ velo.libelle_velo }}</td>
-                        <td>{{ velo.nb }}</td>
-                        <td>{{ velo.duree }}</td>
-                        <td>{{ velo.montant }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table> -->
 
             
             <h3>Individu</h3>
