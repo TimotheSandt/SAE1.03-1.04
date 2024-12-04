@@ -80,10 +80,10 @@ Réparation
     {% elif individu %}
         <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
-    
-        {% if stat_reparation %}
-            <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
-        {% endif %}
+
+    {% if stat_reparations %}
+        <p> {{ stat_reparations.nb }} réparation sur un total de {{ stat_reparations.duree_total }} jours pour un total de {{ stat_reparations.montant_total }} €</p>
+    {% endif %}
 
 {% endblock %}
 
