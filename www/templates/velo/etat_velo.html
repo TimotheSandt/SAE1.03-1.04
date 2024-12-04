@@ -4,12 +4,16 @@
 État des Vélos
 {% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/etat.css') }}">
+{% endblock %}
+
 {% block body %}
 <main>
     <section>
         <h1>État des Vélos</h1>
 
-        <form action="/velo/etat/" method="POST">
+        <form action="/velo/etat/" method="POST" class="form-group">
             <label for="selection_velo">Sélectionnez un vélo :</label>
             <select id="selection_velo" name="selection_velo" required>
                 <option value="" disabled selected hidden> Sélectionnez un vélo </option>
