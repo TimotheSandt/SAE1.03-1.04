@@ -5,58 +5,59 @@ Réparation
 {% endblock %}
 
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/location_list.css') }}">
+{% endblock %}
+
+
 {% block body %}
+<div class="list-container">
+    <h3>Liste des réparations</h3>
 
+    <div class="action-buttons">
+        <a href="/reparation/add" class="btn btn-primary">Ajouter une réparation</a>
+        <a href="/reparation/etat/" class="btn btn-secondary">État des réparations</a>
+        <a href="/type_reparation/add" class="btn btn-primary">Ajouter un type de réparation</a>
+    </div>
 
-<h3>Réparation</h3>
-<a href="/reparation/add">Ajouter une réparation</a>
-<br>
-<a href="/reparation/etat/">État des réparations</a>
-<br>
-<a href="/type_reparation/add">Ajouter un type de réparation</a>
-<br><br>
-
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Type de réparation</th>
-            <th>Date</th>
-            <th>Durée</th>
-            <th>Prix main d'oeuvre</th>
-            <th>Facture</th>
-            <th>Vélo</th>
-            <th>Individu</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
     {% if reparations | length >= 1 %}
-        {% for ligne in reparations %}
-           <tr>
-                  <td>{{ ligne.id }}</td>
-                  <td>{{ ligne.type_reparation }}</td>
-                  <td>{{ ligne.date }}</td>
-                  <td>{{ ligne.duree }}</td>
-                  <td>{{ ligne.prix }}</td>
-                  <td>{{ ligne.facture }}</td>
-                  <td>{{ ligne.velo }}</td>
-                  <td>{{ ligne.individu }}</td>
-                  <td>{{ ligne.description }}</td>
-                  <td>
-                      <a class="edit_button" href="/reparation/edit?id={{ ligne.id }}">Éditer</a>&nbsp;
-                      <a class="delete_button" href="/reparation/delete?id={{ ligne.id }}" >Supprimer</a>
-                  </td>
-           </tr>
-        {% endfor %}
-    {% else %}
+    <table class="table">
+        <thead class="thead-dark">
             <tr>
-                  <td>
-                      Aucune réparation effectuée
-                  </td>
-           </tr>
+                <th>ID</th>
+                <th>Type de réparation</th>
+                <th>Date</th>
+                <th>Durée</th>
+                <th>Prix main d'oeuvre</th>
+                <th>Facture</th>
+                <th>Vélo</th>
+                <th>Individu</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in reparations %}
+            <tr>
+                    <td>{{ ligne.id }}</td>
+                    <td>{{ ligne.type_reparation }}</td>
+                    <td>{{ ligne.date }}</td>
+                    <td>{{ ligne.duree }}</td>
+                    <td>{{ ligne.prix }}</td>
+                    <td>{{ ligne.facture }}</td>
+                    <td>{{ ligne.velo }}</td>
+                    <td>{{ ligne.individu }}</td>
+                    <td>{{ ligne.description }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-edit" href="/reparation/edit?id={{ ligne.id }}">Éditer</a>&nbsp;
+                        <a class="btn btn-sm btn-delete" href="/reparation/delete?id={{ ligne.id }}" >Supprimer</a>
+                    </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="no-data">Aucune réparation effectuée</p>
     {% endif %}
-    </tbody>
-</table>
+</div>
 {% endblock %}
