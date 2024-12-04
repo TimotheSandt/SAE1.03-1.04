@@ -10,6 +10,8 @@ a:hover {
 nav {
     margin: 0;
     padding: 10px;
+
+    margin-bottom: 75px;
 }
 
 nav a {
@@ -30,3 +32,28 @@ nav a:hover::after {
 }
 
 
+.liens {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hidden {
+    position: absolute;
+    top: 50px;
+    display: none;
+    transition: 0.5s ease-out;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.hidden a {
+    width: max-content;
+}
+
+.liens:hover .hidden, 
+.hidden:hover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
