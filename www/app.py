@@ -772,7 +772,7 @@ def render_etat_reparation(id_individu):
     
     # recherche des velos
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Reparation.duree + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
+    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Reparation.duree_reparation + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Velo
                 JOIN Reparation ON Velo.code_velo = Reparation.code_velo
                 JOIN Facture ON Reparation.id_facture = Facture.id_facture
@@ -780,7 +780,7 @@ def render_etat_reparation(id_individu):
                 GROUP BY Velo.code_velo, Velo.libelle_velo
                 ORDER BY nb DESC;
             '''
-    values = (id_individu, id_individu)
+    values = (id_individu)
     mycursor.execute(sql, values)
     velos_concerne = mycursor.fetchall()
     
@@ -859,7 +859,7 @@ def valid_etat_reparation():
     if individu is None:
         return redirect('/reparation/etat/')
     
-    return render_etat_reparation(int(individu))
+    return render_etat_reparation(individu)
 
 ############################
 ########### Velo ###########
