@@ -1,8 +1,29 @@
 <nav class="navbar">
-    <a class="navbar-brand" href="/">Home</a>
-    <a class="navbar-brand" href="/location/show">Location (SANDT Timothé)</a>
-    <a class="navbar-brand" href="/velo/show">Vélo (TALALI Zakaria)</a>
-    <a class="navbar-brand" href="/reparation/show">Réparation (MIGUET Maxime)</a>
-    <a class="navbar-brand" href="/compte/add">compte</a>
+    <div class="liens">
+        <a class="navbar-brand" href="/">Home</a>
+    </div>
+    <div class="liens">
+        <a class="navbar-brand" href="/location/show">Location (SANDT Timothé)</a>
+        <div class="hidden">
+            <a class="navbar-brand" href="/location/add">CRUD</a>
+            <a class="navbar-brand" href="/location/etat">Etat</a>
+        </div>
+    </div>
+    <div class="liens">
+        <a class="navbar-brand" href="/velo/show">Vélo (TALALI Zakaria)</a>
+        <div class="hidden">
+            <a class="navbar-brand" href="/velo/add">CRUD</a>
+            <a class="navbar-brand" href="/velo/etat">Etat</a>
+        </div>
+    </div>
+    <div class="liens">
+        <a class="navbar-brand" href="/reparation/show">Réparation (MIGUET Maxime)</a>
+        <div class="hidden">
+            <a class="navbar-brand" href="/reparation/add">CRUD</a>
+            <a class="navbar-brand" href="/reparation/etat">Etat</a>
+        </div>
+    </div>
+    <div class="liens">
+        <a class="navbar-brand" href="/compte/add">compte</a>
+    </div>
 </nav>
-<hr>

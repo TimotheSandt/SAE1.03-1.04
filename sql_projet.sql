@@ -88,7 +88,6 @@ CREATE TABLE Reparation(
 
 CREATE TABLE Location(
    ID_location INT AUTO_INCREMENT,
-   prix DECIMAL(19,4),
    duree INT,
    date_location DATE,
    id_facture INT NOT NULL,
@@ -110,3 +109,6 @@ CREATE TABLE Utilise(
    FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
    FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
+
+
+source sql_insert.sql

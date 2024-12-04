@@ -34,8 +34,6 @@
         <label for="selection_individus">Individu :</label>
         <select name="selection_individus" id="selection_individus" required>
             <option value="" disabled selected hidden>Veuillez sélectionner un individu</option>
-            <option value="best">Meilleurs locataire</option>
-            <option value="pire">Pire locataire</option>
             {% for individu in selection_individus %}
                 <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
             {% endfor %}
@@ -76,14 +74,14 @@
             <div class="two-column-layout">
                 <div id="location">
                     <h3>Locations Effectuées</h3>
-                    <div class="table-container">
-                        <table>
+                    <div>
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Prix</th>
-                                    <th>Date début</th>
-                                    <th>Date fin</th>
+                                    <th>début</th>
+                                    <th>fin</th>
                                     <th>Vélo</th>
                                     <th>Locataire</th>       
                                     <th>Bailleur</th>
