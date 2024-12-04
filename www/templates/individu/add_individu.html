@@ -4,32 +4,47 @@
 Compte
 {% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
 
 {% block body %}
-
+<div class="form-container">
 
 <h3>Creer un compte</h3>
 
-<form action="/compte/add" method="POST">
+<form action="/compte/add" method="POST" class="edit-add-form">
 
 
-    <label for="nom">Nom : </label>
-    <input type="text" name="nom" id="nom" required>
+    <div class="form-group">
+        <label for="nom">Nom : </label>
+        <input type="text" name="nom" id="nom" required>
+    </div>
 
-    <label for="prenom">Prénom : </label>
-    <input type="text" name="prénom" id="prenom" required>
+    <div class="form-group">
+        <label for="prenom">Prénom : </label>
+        <input type="text" name="prénom" id="prenom" required>
+    </div>
 
-    <label for="adresse">Adresse : </label>
-    <input type="text" name="adresse" id="adresse" required>
+    <div class="form-group">
+        <label for="adresse">Adresse : </label>
+        <input type="text" name="adresse" id="adresse" required>
+    </div>
 
-    <label for="telephone">Téléphone : </label>
-    <input type="text" name="telephone" id="telephone" required>
+    <div class="form-group">
+        <label for="telephone">Téléphone : </label>
+        <input type="text" name="telephone" id="telephone" required>
+    </div>
 
-    <label for="email">Email : </label>
-    <input type="text" name="email" id="email" required>
+    <div class="form-group">
+        <label for="email">Email : </label>
+        <input type="text" name="email" id="email" required>
+    </div>
 
-
-    <button type="submit">Creer un compte</button>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Creer un compte</button>
+        <a href="/" class="btn btn-secondary">Retour</a>
+    </div>
     
 </form>
 
