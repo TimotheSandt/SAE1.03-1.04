@@ -974,18 +974,15 @@ def delete_velo():
 @app.route('/velo/etat/', methods=['GET'])
 def show_etat_velo():
     selection_velos = get_velos()
-    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
+    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None, stats=None, locations=None)
 
 @app.route('/velo/etat/', methods=['POST'])
 def valid_etat_velo():
     id_velo = request.form.get('selection_velo')
-
     if id_velo is None:
         flash("Veuillez sélectionner un vélo.", "danger")
         return redirect(url_for('show_etat_velo'))
-
     return render_etat_velo(id_velo)
-
 
 def render_etat_velo(id_velo):
     selection_velos = get_velos()
@@ -1035,6 +1032,7 @@ def render_etat_velo(id_velo):
         velo=velo,
         selection_velos=selection_velos,
         locations=locations,
+        stats=stats
     )
 
 
