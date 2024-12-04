@@ -990,14 +990,13 @@ def show_etat_velo():
     selection_velos = get_velos()
     return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
 
+
 @app.route('/velo/etat/', methods=['POST'])
 def valid_etat_velo():
     id_velo = request.form.get('selection_velo')
-
-    if id_velo is None:
+    if not id_velo:
         flash("Veuillez sélectionner un vélo.", "danger")
         return redirect(url_for('show_etat_velo'))
-
     return render_etat_velo(id_velo)
 
 
@@ -1014,8 +1013,7 @@ def render_etat_velo(id_velo):
         JOIN Etat ON Velo.code_etat = Etat.code_etat
         WHERE Velo.code_velo = %s;
     '''
-    values = (id_velo,)
-    mycursor.execute(sql, values)
+    mycursor.execute(sql, (id_velo,))
     velo = mycursor.fetchone()
 
     sql = '''
@@ -1025,13 +1023,13 @@ def render_etat_velo(id_velo):
                CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
                CONCAT(bai.nom, ' ', bai.prenom) AS bailleur
         FROM Location
-        JOIN Individu AS loc ON Location.locataire = loc.id_individu
-        JOIN Individu AS bai ON Location.bailleur = bai.id_individu
-        JOIN Facture ON Location.id_facture = Facture.id_facture
+        LEFT JOIN Individu AS loc ON Location.locataire = loc.id_individu
+        LEFT JOIN Individu AS bai ON Location.bailleur = bai.id_individu
+        LEFT JOIN Facture ON Location.id_facture = Facture.id_facture
         WHERE Location.code_velo = %s
         ORDER BY Location.date_location;
     '''
-    mycursor.execute(sql, values)
+    mycursor.execute(sql, (id_velo,))
     locations = mycursor.fetchall()
 
     sql = '''
@@ -1039,20 +1037,31 @@ def render_etat_velo(id_velo):
                COUNT(Location.id_location) AS nb_locations,
                SUM(Location.duree) AS duree_totale
         FROM Location
-        JOIN Facture ON Location.id_facture = Facture.id_facture
+        LEFT JOIN Facture ON Location.id_facture = Facture.id_facture
         WHERE Location.code_velo = %s
         GROUP BY Location.code_velo;
     '''
-    mycursor.execute(sql, values)
+    mycursor.execute(sql, (id_velo,))
     stats = mycursor.fetchone()
+
+    if not stats:
+        stats = {
+            'montant_total': 0,
+            'nb_locations': 0,
+            'duree_totale': 0
+        }
+
+    if not velo:
+        flash("Aucun vélo trouvé avec cet identifiant.", "danger")
+        return redirect(url_for('show_etat_velo'))
 
     return render_template(
         'velo/etat_velo.html',
         velo=velo,
         selection_velos=selection_velos,
         locations=locations,
+        stats=stats
     )
-
 
 #####################
 
