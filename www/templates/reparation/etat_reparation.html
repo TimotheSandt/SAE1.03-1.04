@@ -1,22 +1,84 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Réparation
+Réparation
 {% endblock %}
 
 
 {% block body %}
 
-    <form action="/reparation/etat/" method="POST">
-        <label for="selection_individus">Individu :</label>
-        <select name="selection_individus" id="selection_individus" required>
-            <option value="" disabled selected hidden>Veuillez sélectionner un individu </option>
-            {% for individu in selection_individus %}
-                <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Voir l'état</button>
-    </form>
+<form action="/reparation/etat/" method="POST">
+    <label for="selection_individus">Individu :</label>
+    <select name="selection_individus" id="selection_individus" required>
+        <option value="" disabled selected hidden>Veuillez sélectionner un individu </option>
+        {% for individu in selection_individus %}
+        <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Voir l'état</button>
+</form>
+
+{% if individu and reparations %}
+    <div>
+        <h1>État pour {{ individu.nom_prenom }} </h1>
+
+
+        
+        <h3>Individu</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Nombre de réparation</th>
+                    <th>Montant total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ individu.id }}</td>
+                    <td>{{ individu.nom_prenom }}</td>
+                    <td>{{ stat_reparations.nb }}</td>
+                    <td>{{ stat_reparations.montant_total }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+        <h3>Réparation effectuée</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Type de réparation</th>
+                    <th>Date de début</th>
+                    <th>Durée</th>
+                    <th>Prix</th>
+                    <th>Facture</th>
+                    <th>Vélo</th>
+                    <th>Individu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in reparations %}
+                <tr>
+                        <td>{{ ligne.code_reparation }}</td>
+                        <td>{{ ligne.type_reparation }}</td>
+                        <td>{{ ligne.date_debut }}</td>
+                        <td>{{ ligne.duree }}</td>
+                        <td>{{ ligne.prix }}</td>
+                        <td>{{ ligne.facture }}</td>
+                        <td>{{ ligne.velo }}</td>
+                        <td>{{ ligne.individu }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+{% endif %}
+
 
     <form action="/reparation/etat/" method="POST">
         <label for="selection_velo">Vélo :</label>
@@ -30,8 +92,8 @@
     </form>
 
     {% if velos and reparations %} 
-
-    <h1>État pour {{ velo.libelle_velo }} </h1>
+    <div>
+        <h1>État pour {{ velo.libelle_velo }} </h1>
     
         <h3>Vélo</h3>
         <table class="table">
@@ -60,70 +122,12 @@
     {% endif %}
 
 
-    {% if individu and reparations %}
-        <div>
-            <h1>État pour {{ individu.nom_prenom }} </h1>
-
-
-            
-            <h3>Individu</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Nombre de réparation</th>
-                        <th>Montant total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ individu.id }}</td>
-                        <td>{{ individu.nom_prenom }}</td>
-                        <td>{{ stat_reparations.nb }}</td>
-                        <td>{{ stat_reparations.montant_total }}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-
-            <h3>Réparation effectuée</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Type de réparation</th>
-                        <th>Date de début</th>
-                        <th>Durée</th>
-                        <th>Prix</th>
-                        <th>Facture</th>
-                        <th>Vélo</th>
-                        <th>Individu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ligne in reparations %}
-                    <tr>
-                            <td>{{ ligne.code_reparation }}</td>
-                            <td>{{ ligne.type_reparation }}</td>
-                            <td>{{ ligne.date_debut }}</td>
-                            <td>{{ ligne.duree }}</td>
-                            <td>{{ ligne.prix }}</td>
-                            <td>{{ ligne.facture }}</td>
-                            <td>{{ ligne.velo }}</td>
-                            <td>{{ ligne.individu }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
             {% if stat_reparation %}
                 <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
             {% endif %}
 
 
-        </div>
+    </div>
     {% elif individu %}
         <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
