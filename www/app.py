@@ -1009,7 +1009,7 @@ def render_etat_velo(id_velo):
     velo = mycursor.fetchone()
 
     sql = '''
-        SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix,
+        SELECT Location.id_location AS id, ROUND(Facture.prix_total, 2) AS prix,
                Location.date_location AS date_debut, 
                DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
                CONCAT(loc.nom, ' ', loc.prenom) AS locataire,
@@ -1017,6 +1017,7 @@ def render_etat_velo(id_velo):
         FROM Location
         JOIN Individu AS loc ON Location.locataire = loc.id_individu
         JOIN Individu AS bai ON Location.bailleur = bai.id_individu
+        JOIN Facture ON Location.id_facture = Facture.id_facture
         WHERE Location.code_velo = %s
         ORDER BY Location.date_location;
     '''
@@ -1024,10 +1025,11 @@ def render_etat_velo(id_velo):
     locations = mycursor.fetchall()
 
     sql = '''
-        SELECT ROUND(SUM(Location.prix), 2) AS montant_total,
+        SELECT ROUND(SUM(Facture.prix_total), 2) AS montant_total,
                COUNT(Location.id_location) AS nb_locations,
                SUM(Location.duree) AS duree_totale
         FROM Location
+        JOIN Facture ON Location.id_facture = Facture.id_facture
         WHERE Location.code_velo = %s
         GROUP BY Location.code_velo;
     '''
