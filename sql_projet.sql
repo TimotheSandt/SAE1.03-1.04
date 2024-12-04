@@ -88,7 +88,6 @@ CREATE TABLE Reparation(
 
 CREATE TABLE Location(
    ID_location INT AUTO_INCREMENT,
-   prix DECIMAL(19,4),
    duree INT,
    date_location DATE,
    id_facture INT NOT NULL,

@@ -109,7 +109,7 @@ def valid_add_individu():
 @app.route('/location/show', methods=['GET'])
 def show_location():
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix, 
+    sql =   ''' SELECT Location.id_location AS id, ROUND(Facture.prix_total, 2) AS prix, 
                     Location.date_location AS date_debut, 
                     DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
                     Velo.libelle_velo AS velo, 
@@ -119,6 +119,7 @@ def show_location():
                 JOIN Velo ON Location.code_velo = Velo.code_velo
                 JOIN Individu AS loc ON Location.locataire = loc.id_individu
                 JOIN Individu AS bai ON Location.bailleur = bai.id_individu
+                JOIN Facture ON Location.id_facture = Facture.id_facture
                 ORDER BY date_location;
             '''
     mycursor.execute(sql)
@@ -229,10 +230,10 @@ def valid_add_location():
     
     ### Ajout de la location
     mycursor = get_db().cursor()
-    sql =   ''' INSERT INTO Location(prix, date_location, duree, locataire, bailleur, code_velo, id_facture)
-                VALUES (%s, %s, %s, %s, %s, %s, %s);
+    sql =   ''' INSERT INTO Location(date_location, duree, locataire, bailleur, code_velo, id_facture)
+                VALUES (%s, %s, %s, %s, %s, %s);
             '''
-    values = (prix, date, duree, locataire, bailleur, velo, id_facture)
+    values = (date, duree, locataire, bailleur, velo, id_facture)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
@@ -244,8 +245,9 @@ def edit_location():
     # recherche de la location
     id = request.args.get('id')
     mycursor = get_db().cursor()
-    sql =   ''' SELECT id_location AS id, prix, date_location AS date, duree + 1 AS duree, locataire, bailleur, code_velo, id_facture
-                    FROM Location
+    sql =   ''' SELECT id_location AS id, Facture.prix_total AS prix, date_location AS date, duree + 1 AS duree, locataire, bailleur, code_velo, Location.id_facture
+                FROM Location
+                JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE id_location = %s;
             '''
     values = (id,)
@@ -303,10 +305,10 @@ def valid_edit_location():
     
     mycursor = get_db().cursor()
     sql =   ''' UPDATE Location
-                SET prix = %s, date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s, id_facture = %s
+                SET date_location = %s, duree = %s, locataire = %s, bailleur = %s, code_velo = %s, id_facture = %s
                 WHERE id_location = %s;
             '''
-    values = (prix, date, duree, locataire, bailleur, velo, id_facture, id)
+    values = (date, duree, locataire, bailleur, velo, id_facture, id)
     mycursor.execute(sql, values)
     get_db().commit()
     return redirect(url_for('show_location'))
@@ -338,29 +340,6 @@ def get_individu():
     
     return individu
 
-
-# à faire
-def get_best_worst_individu(classification, type_individu):
-    assert type_individu in ['locataire', 'bailleur'], "Type d'individu inconnu"
-    
-    if classification == 'pire':
-        ordre = 'ASC'
-    elif classification == 'best':
-        ordre = 'DESC'
-    else:
-        raise ValueError("Classification inconnue")
-    
-    mycursor = get_db().cursor()
-    sql =   f''' SELECT Individu.id_individu AS id, CONCAT(Individu.nom, ' ', Individu.prenom) AS nom_prenom, ROUND(SUM(Facture.prix_total), 2) AS montant
-                FROM Location
-                JOIN Individu ON Location.{type_individu} = Individu.id_individu
-                JOIN Facture ON Location.id_facture = Facture.id_facture
-                GROUP BY Individu.id_individu, Individu.nom, Individu.prenom
-                ORDER BY montant {ordre}
-                LIMIT 1;
-            '''
-    mycursor.execute(sql)
-    return mycursor.fetchone()
 
 def render_etat_location(id_individu):
     selection_individus = get_individu()
@@ -417,7 +396,7 @@ def render_etat_location(id_individu):
     
     
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Location.id_location AS id, ROUND(Location.prix, 2) AS prix, 
+    sql =   ''' SELECT Location.id_location AS id, ROUND(Facture.prix_total, 2) AS prix, 
                     Location.date_location AS date_debut, 
                     DATE_ADD(Location.date_location, INTERVAL Location.duree DAY) AS date_fin,
                     Velo.libelle_velo AS velo, 
@@ -427,6 +406,7 @@ def render_etat_location(id_individu):
                 JOIN Velo ON Location.code_velo = Velo.code_velo
                 JOIN Individu AS bai ON Location.bailleur = bai.id_individu
                 JOIN Individu AS loc ON Location.locataire = loc.id_individu
+                JOIN Facture ON Location.id_facture = Facture.id_facture
                 WHERE Location.locataire = %s OR Location.bailleur = %s
                 ORDER BY date_location;
             '''
@@ -479,16 +459,6 @@ def valid_etat_location():
     
     if individu is None:
         return redirect('/location/etat/')
-    
-    
-    if individu == 'best_locataire':
-        individu = get_best_worst_individu('best', 'locataire')
-    elif individu == 'worst_locataire':
-        individu = get_best_worst_individu('pire', 'locataire')
-    elif individu == 'best_bailleur':
-        individu = get_best_worst_individu('best', 'bailleur')
-    elif individu == 'worst_bailleur':
-        individu = get_best_worst_individu('pire', 'bailleur')
     
     print(individu)
     return render_etat_location(individu)
