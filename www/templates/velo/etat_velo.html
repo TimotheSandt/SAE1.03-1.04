@@ -59,32 +59,6 @@
         </table>
         {% endif %}
 
-        <h2>Individus Associés</h2>
-        {% if individus %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Nombre de Locations</th>
-                    <th>Montant (€)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for individu in individus %}
-                <tr>
-                    <td>{{ individu.id }}</td>
-                    <td>{{ individu.nom_prenom }}</td>
-                    <td>{{ individu.nb }}</td>
-                    <td>{{ individu.montant }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>Aucun individu associé à ce vélo.</p>
-        {% endif %}
-
         <h2>Historique des Locations</h2>
         {% if locations %}
         <table class="table">
