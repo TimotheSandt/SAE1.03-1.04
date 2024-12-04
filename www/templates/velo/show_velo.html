@@ -38,8 +38,8 @@ Liste des Vélos
                         <td>{{ velo.categorie }}</td>
                         <td>{{ velo.etat }}</td>
                         <td>
-                            <a href="/velo/edit?id={{ velo.id }}">Modifier</a>
-                            <a href="/velo/delete?id={{ velo.id }}"> Supprimer</a>
+                            <a href="/velo/edit?id={{ velo.id }}" class="btn btn-sm btn-edit" >Editer</a>
+                            <a href="/velo/delete?id={{ velo.id }}" class="btn btn-sm btn-delete"> Supprimer</a>
                         </td>
                     </tr>
                     {% endfor %}
