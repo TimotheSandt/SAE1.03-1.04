@@ -7,9 +7,9 @@ Réparation
 
 {% block body %}
 
-    <form action="/reparation/etat/" method="POST">
-        <label for="selection_individus">Individu :</label>
-        <select name="selection_individus" id="selection_individus" required>
+<form action="/reparation/etat/" method="POST">
+    <label for="selection_individus">Individu :</label>
+    <select name="selection_individus" id="selection_individus" required>
             <option value="" disabled selected hidden>Veuillez sélectionner un individu </option>
             {% for individu in selection_individus %}
             <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
@@ -17,7 +17,11 @@ Réparation
         </select>
         <button type="submit">Voir l'état</button>
     </form>
-
+    
+    {% if stat_reparations %}
+        <p> {{ stat_reparations.nb }} réparation sur un total de {{ stat_reparations.duree_total }} jours pour un total de {{ stat_reparations.montant_total }} €</p>
+    {% endif %}
+    
     {% if individu and reparations %}
         <div>
             <h1>État pour {{ individu.nom_prenom }} </h1>
@@ -81,9 +85,6 @@ Réparation
         <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
 
-    {% if stat_reparations %}
-        <p> {{ stat_reparations.nb }} réparation sur un total de {{ stat_reparations.duree_total }} jours pour un total de {{ stat_reparations.montant_total }} €</p>
-    {% endif %}
 
 {% endblock %}
 
