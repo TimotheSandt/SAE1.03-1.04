@@ -717,7 +717,7 @@ def delete_reparation():
 #######################
 
 
-def render_etat_reparation(id_individu, id_velo):
+def render_etat_reparation(id_individu):
     selection_individus = get_individu()
     
     # recherche de l'individu
@@ -799,7 +799,7 @@ def render_etat_reparation(id_individu, id_velo):
                 WHERE Reparation.code_velo = %s
                 GROUP BY Reparation.code_velo;
             '''
-    values = (id_velo,)
+    values = (id_individu,)
     mycursor.execute(sql, values)
     stat_velo_reparations = mycursor.fetchone()
 
@@ -824,15 +824,12 @@ def show_etat_reparation():
 @app.route('/reparation/etat/', methods=['POST'])
 def valid_etat_reparation():
     individu = request.form.get('selection_individus')
-    id_velo = request.form.get('selection_velos')
     
     if individu is None:
         return redirect('/reparation/etat/')
     
-    if id_velo is None:
-        return redirect('/reparation/etat/')
 
-    return render_etat_reparation(individu, id_velo)
+    return render_etat_reparation(individu)
 
 ############################
 ########### Velo ###########
@@ -981,15 +978,18 @@ def delete_velo():
 @app.route('/velo/etat/', methods=['GET'])
 def show_etat_velo():
     selection_velos = get_velos()
-    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None, stats=None, locations=None)
+    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
 
 @app.route('/velo/etat/', methods=['POST'])
 def valid_etat_velo():
     id_velo = request.form.get('selection_velo')
+
     if id_velo is None:
         flash("Veuillez sélectionner un vélo.", "danger")
         return redirect(url_for('show_etat_velo'))
+
     return render_etat_velo(id_velo)
+
 
 def render_etat_velo(id_velo):
     selection_velos = get_velos()
@@ -1039,7 +1039,6 @@ def render_etat_velo(id_velo):
         velo=velo,
         selection_velos=selection_velos,
         locations=locations,
-        stats=stats
     )
 
 
