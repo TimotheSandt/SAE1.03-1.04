@@ -10,11 +10,10 @@
     <form action="/reparation/etat/" method="POST">
         <label for="selection_individus">Individu :</label>
         <select name="selection_individus" id="selection_individus" required>
-            <option value="" disabled selected hidden>Veuillez sélectionner un individu</option>
+            <option value="" disabled selected hidden>Veuillez sélectionner un individu ou un vélo</option>
             {% for individu in selection_individus %}
                 <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
             {% endfor %}
-            <option value="" disabled selected hidden>Veuillez sélectionner un vélo</option>
             {% for velo in velos %}
                 <option value="{{ velo.code_velo }}">{{ velo.libelle }}</option>
             {% endfor %}
