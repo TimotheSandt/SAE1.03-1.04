@@ -4,43 +4,64 @@
 Modifier un Vélo
 {% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
 {% block body %}
-<h3>Modifier un Vélo</h3>
+    <div class="form-container">
+        <h1>Modifier un Vélo</h1>
 
-<form action="/velo/edit" method="POST">
-    <input type="hidden" name="id" value="{{ velo.code_velo }}">
+        <form action="/velo/edit" method="POST" class="edit-add-form">
 
-    <label for="libelle_velo">Libellé :</label>
-    <input type="text" name="libelle_velo" id="libelle_velo" value="{{ velo.libelle_velo }}" maxlength="50" required>
+            <div class="form-group">
+                <input type="hidden" name="id" value="{{ velo.code_velo }}" required>
+            </div>
 
-    <label for="prix">Prix :</label>
-    <input type="number" name="prix" id="prix" value="{{ velo.prix }}" required>
+            <div class="form-group">
+                <label for="libelle_velo">Libellé :</label>
+                <input type="text" name="libelle_velo" id="libelle_velo" value="{{ velo.libelle_velo }}" maxlength="50" required>
+            </div>
 
-    <label for="date_achat">Date d'achat :</label>
-    <input type="date" name="date_achat" id="date_achat" value="{{ velo.date_achat }}" required>
+            <div class="form-group">
+                <label for="prix">Prix :</label>
+                <input type="number" name="prix" id="prix" value="{{ velo.prix }}" required>
+            </div>
 
-    <label for="code_categorie_velo">Catégorie :</label>
-    <select name="code_categorie_velo" id="code_categorie_velo" required>
-        {% for categorie in categories %}
-            <option value="{{ categorie.code_categorie_velo }}" 
-                {% if categorie.code_categorie_velo == velo.code_categorie_velo %} selected {% endif %}>
-                {{ categorie.libelle_categorie_velo }}
-            </option>
-        {% endfor %}
-    </select>
+            <div class="form-group">
+                <label for="date_achat">Date d'achat :</label>
+                <input type="date" name="date_achat" id="date_achat" value="{{ velo.date_achat }}" required>
+            </div>
 
-    <label for="code_etat">État :</label>
-    <select name="code_etat" id="code_etat" required>
-        {% for etat in etats %}
-            <option value="{{ etat.code_etat }}" 
-                {% if etat.code_etat == velo.code_etat %} selected {% endif %}>
-                {{ etat.libelle_etat }}
-            </option>
-        {% endfor %}
-    </select>
+            <div class="form-group">
+                <label for="code_categorie_velo">Catégorie :</label>
+                <select name="code_categorie_velo" id="code_categorie_velo" required>
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.code_categorie_velo }}" 
+                            {% if categorie.code_categorie_velo == velo.code_categorie_velo %} selected {% endif %}>
+                            {{ categorie.libelle_categorie_velo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <button type="submit">Modifier</button>
-</form>
+            <div class="form-group">
+                <label for="code_etat">État :</label>
+                <select name="code_etat" id="code_etat" required>
+                    {% for etat in etats %}
+                        <option value="{{ etat.code_etat }}" 
+                            {% if etat.code_etat == velo.code_etat %} selected {% endif %}>
+                            {{ etat.libelle_etat }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-<a href="/velo/show">Retour à la liste des vélos</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="/velo/show" class="btn btn-secondary">Retour</a>
+            </div>
+            
+        </form>
+    </div>
 {% endblock %}
