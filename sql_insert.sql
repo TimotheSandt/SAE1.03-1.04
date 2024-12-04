@@ -73,8 +73,8 @@ VALUES (30.00),
 
 INSERT INTO Reparation (date_reparation, duree_reparation, description_reparation, prix_main_d_oeuvre, id_facture, code_type_reparation, code_velo, id_individu) 
 VALUES ('2022-01-01', 2, 'Changement de roue', 10.00, 1, 1, 1, 1),
-      ('2024-07-08', 4, None, 50.00, 3, 5, 4, 2),
-      ('2024-07-23', 1, None, 25.00, 4, 5, 4, 2);
+      ('2024-07-08', 4, NULL, 50.00, 4, 5, 4, 2),
+      ('2024-07-23', 1, NULL, 25.00, 5, 5, 4, 2);
 
 INSERT INTO Utilise (code_piece, code_reparation, date_utilisation)
 VALUES (2, 1, '2022-01-01'),
@@ -82,6 +82,6 @@ VALUES (2, 1, '2022-01-01'),
       (17, 2, '2024-07-08'),
       (1, 3, '2024-07-23');
 
-INSERT INTO Location (prix, duree, date_location, id_facture, locataire, bailleur, code_velo)
-VALUES (34.00, 2, 2, 2, 5, 4),
-      (546.00, 90, 3);
+INSERT INTO Location (duree, date_location, id_facture, locataire, bailleur, code_velo)
+VALUES (2, '2024-09-03', 2, 2, 5, 4),
+      (90, '2025-01-01', 3, 3, 5, 2);
