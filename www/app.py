@@ -835,6 +835,31 @@ def valid_etat_reparation():
 ########### Velo ###########
 ############################
 
+def get_db():
+    if 'db' not in g:
+        g.db = pymysql.connect(
+            host=app.config["DB_HOST"],
+            user=app.config["DB_USER"],
+            password=app.config["DB_PASSWORD"],
+            database=app.config["DB_NAME"],
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    return g.db
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
+
+def get_velos():
+    mycursor = get_db().cursor()
+    sql = '''SELECT code_velo, libelle_velo FROM Velo ORDER BY libelle_velo;'''
+    mycursor.execute(sql)
+    return mycursor.fetchall()
+
 @app.route('/velo/show', methods=['GET'])
 def show_velo():
     mycursor = get_db().cursor()
