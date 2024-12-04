@@ -109,3 +109,6 @@ CREATE TABLE Utilise(
    FOREIGN KEY(code_piece) REFERENCES Piece(code_piece),
    FOREIGN KEY(code_reparation) REFERENCES Reparation(code_reparation)
 );
+
+
+source sql_insert.sql
