@@ -869,7 +869,11 @@ def valid_add_velo():
     date_achat = request.form['date_achat']
     code_categorie_velo = request.form['code_categorie_velo']
     code_etat = request.form['code_etat']
-    
+
+    if not libelle_velo or not prix or not date_achat or not code_categorie_velo or not code_etat:
+        flash("Tous les champs sont obligatoires.", "danger")
+        return redirect(url_for('add_velo'))
+
     mycursor = get_db().cursor()
     sql = '''
         INSERT INTO Velo (libelle_velo, prix, date_achat, code_categorie_velo, code_etat)
@@ -909,6 +913,10 @@ def valid_edit_velo():
     code_categorie_velo = request.form['code_categorie_velo']
     code_etat = request.form['code_etat']
 
+    if not libelle_velo or not prix or not date_achat or not code_categorie_velo or not code_etat:
+        flash("Tous les champs sont obligatoires.", "danger")
+        return redirect(url_for('edit_velo', id=id))
+
     mycursor = get_db().cursor()
     sql = '''
         UPDATE Velo
@@ -925,14 +933,33 @@ def valid_edit_velo():
 @app.route('/velo/delete', methods=['GET'])
 def delete_velo():
     id = request.args.get('id')
+
+    if not id:
+        flash("ID de vélo manquant.", "danger")
+        return redirect(url_for('show_velo'))
+
     mycursor = get_db().cursor()
-    sql = '''DELETE FROM Velo
-             WHERE code_velo = %s;'''
-    values = (id)  
-    mycursor.execute(sql, values)
+    sql = "DELETE FROM Velo WHERE code_velo = %s;"
+    mycursor.execute(sql, (id,))
     get_db().commit()
     flash("Vélo supprimé avec succès !", "success")
     return redirect(url_for('show_velo'))
+
+
+@app.route('/velo/etat/', methods=['GET'])
+def show_etat_velo():
+    selection_velos = get_velos()
+    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
+
+@app.route('/velo/etat/', methods=['POST'])
+def valid_etat_velo():
+    id_velo = request.form.get('selection_velo')
+
+    if id_velo is None:
+        flash("Veuillez sélectionner un vélo.", "danger")
+        return redirect(url_for('show_etat_velo'))
+
+    return render_etat_velo(id_velo)
 
 
 def render_etat_velo(id_velo):
@@ -983,28 +1010,7 @@ def render_etat_velo(id_velo):
         velo=velo,
         selection_velos=selection_velos,
         locations=locations,
-        stats=stats
     )
-
-@app.route('/velo/etat/', methods=['GET'])
-def show_etat_velo():
-    selection_velos = get_velos()
-    return render_template('velo/etat_velo.html', selection_velos=selection_velos, velo=None)
-
-@app.route('/velo/etat/', methods=['POST'])
-def valid_etat_velo():
-    id_velo = request.form.get('selection_velo')
-
-    if id_velo is None:
-        return redirect('/velo/etat/')
-
-    return render_etat_velo(id_velo)
-
-def get_velos():
-    mycursor = get_db().cursor()
-    sql = ''' SELECT code_velo, libelle_velo FROM Velo ORDER BY libelle_velo; '''
-    mycursor.execute(sql)
-    return mycursor.fetchall()
 
 
 #####################
