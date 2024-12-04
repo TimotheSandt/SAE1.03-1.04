@@ -810,7 +810,7 @@ def render_etat_reparation(id_individu):
     reparations = mycursor.fetchall()
     
     
-    # recherche des statistiques
+    # recherche des statistiques pour un individu
     mycursor = get_db().cursor()
     sql =   ''' SELECT ROUND(SUM(Reparation.prix_main_d_oeuvre), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
                 FROM Reparation
@@ -822,14 +822,26 @@ def render_etat_reparation(id_individu):
     stat_reparations = mycursor.fetchone()
     
     
-    
+    # recherche des statistiques pour un velo
+    mycursor = get_db().cursor()
+    sql =   ''' SELECT ROUND(SUM(Reparation.prix_main_d_oeuvre), 2) AS montant_total, COUNT(Reparation.code_reparation) AS nb, SUM(Reparation.duree_reparation + 1) AS duree_total
+                FROM Reparation
+                WHERE Reparation.code_velo = %s
+                GROUP BY Reparation.code_velo;
+            '''
+    values = (id_individu,)
+    mycursor.execute(sql, values)
+    stat_velo_reparations = mycursor.fetchone()
+
+
     return render_template('reparation/etat_reparation.html', 
                            individu=individu,
                            selection_individus=selection_individus,
                            type_reparation_concerne=type_reparation_concerne, 
                            velos_concerne=velos_concerne,
                            reparations=reparations,
-                           stat_reparations=stat_reparations,)
+                           stat_reparations=stat_reparations,
+                           stat_velo_reparations=stat_velo_reparations,)
 
 
 

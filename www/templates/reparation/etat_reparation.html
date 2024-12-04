@@ -14,11 +14,17 @@
             {% for individu in selection_individus %}
                 <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
             {% endfor %}
+            <option value="" disabled selected hidden>Veuillez sélectionner un vélo</option>
+            {% for velo in velos %}
+                <option value="{{ velo.code_velo }}">{{ velo.libelle }}</option>
+            {% endfor %}
         </select>
         <button type="submit">Voir l'état</button>
     </form>
 
-    {% if velos %} 
+    {% if velos and reparations %} 
+
+    <h1>État pour {{ individu.nom_prenom }} </h1>
     
         <h3>Vélo</h3>
         <table class="table">
@@ -28,7 +34,7 @@
                     <th>Libellé</th>
                     <th>Nombre de réparation</th>
                     <th>Durée total</th>
-                    <th>Montant</th>
+                    <th>Montant total</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,20 +42,20 @@
                 <tr>
                     <td>{{ velo.code_velo }}</td>
                     <td>{{ velo.libelle_velo }}</td>
-                    <td>{{ velo.nb }}</td>
-                    <td>{{ velo.duree }}</td>
-                    <td>{{ velo.montant }}</td>
+                    <td>{{ stat_velo_reparations.nb }}</td>
+                    <td>{{ stat_velo_reparations.duree_total }}</td>
+                    <td>{{ stat_velo_reparations.montant_total }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        
+
     {% endif %}
 
 
     {% if individu and reparations %}
         <div>
-            <h1>Etat pour {{ individu.nom_prenom }} </h1>
+            <h1>État pour {{ individu.nom_prenom }} </h1>
 
 
             
