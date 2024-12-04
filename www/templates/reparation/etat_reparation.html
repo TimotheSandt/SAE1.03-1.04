@@ -15,12 +15,12 @@ Réparation
     <form action="/reparation/etat/" method="POST">
         <label for="selection_individus">Individu :</label>
         <select name="selection_individus" id="selection_individus" required>
-                <option value="" disabled selected hidden>Veuillez sélectionner un individu </option>
-                {% for individu in selection_individus %}
+            <option value="" disabled selected hidden>Veuillez sélectionner un individu </option>
+            {% for individu in selection_individus %}
                 <option value="{{ individu.id }}">{{ individu.nom_prenom }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Voir l'état</button>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn">Voir l'état</button>
         </form>
     
     {% if individu and reparations %}
