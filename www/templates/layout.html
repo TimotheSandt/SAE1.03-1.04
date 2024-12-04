@@ -4,13 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>
-        {% block title %}
-            layout
-        {% endblock %}
+        {% block title %}layout{% endblock %} - VeloCampus
     </title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" >
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" >
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/nav.css') }}" >
     {% endblock %}
 
     {% block style %}
@@ -19,21 +18,21 @@
 
 </head>
 <body>
-{% include('nav.html') %}
-<main>
+    {% include('nav.html') %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        {% for categorie, message in messages %}
-        <div role="alert" class="alert {{ categorie }}">
-               Information : <strong>{{ message }}</strong>
-        </div>
-        {% endfor %}
+    {% for categorie, message in messages %}
+    <div role="alert" class="alert {{ categorie }}">
+        Information : <strong>{{ message }}</strong>
+    </div>
+    {% endfor %}
     {% endif %}
     {% endwith %}
     {% block body %}
-        <h2>layout.html</h2>
+        <main>
+            <h2>layout.html</h2>
+        </main>
     {% endblock %}
-</main>
 {% block javascripts %}
     <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
 {% endblock %}

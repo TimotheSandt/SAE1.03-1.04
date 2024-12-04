@@ -74,7 +74,7 @@ def activate_db_options(db):
 
 @app.route('/')
 def show_accueil():
-    return render_template('layout.html')
+    return render_template('index.html')
 
 ################################
 ########### Individu ###########

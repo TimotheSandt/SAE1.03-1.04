@@ -1,0 +1,32 @@
+a {
+    color: #2b6891;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2b6891;
+}
+
+nav {
+    margin: 0;
+    padding: 10px;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background-color: #2b6891;
+    transition: width 0.3s ease-in;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+

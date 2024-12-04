@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Bienvenue sur VeloCampus</h1>
+        <p class="subtitle">Votre solution de location de vélos sur le campus</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>À propos de VeloCampus</h2>
+            <p>VeloCampus est une initiative étudiante visant à promouvoir la mobilité durable sur le campus. Notre plateforme facilite la location de vélos entre étudiants, offrant une solution économique et écologique pour vos déplacements.</p>
+        </section>
+
+        <section>
+            <h2>Nos services</h2>
+            <ul>
+                <li>Location de vélos entre étudiants</li>
+                <li>Gestion des réparations</li>
+                <li>Suivi des locations</li>
+                <li>Communauté cycliste étudiante</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Notre équipe</h2>
+            <div class="team">
+                <ul>
+                    <li>Miguet Maxime</li>
+                    <li>Sandt Timothé</li>
+                    <li>Talali Zakaria</li>
+                </ul>
+                <ul>
+                    <li>Groupe TP : S1C2</li>
+                    <li>Groupe SAE : 22</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <h2>Prêt à pédaler ?</h2>
+        <a href="/location/show" class="btn btn-primary">Voir les vélos disponibles</a>
+    </footer>
+{% endblock %}
+
