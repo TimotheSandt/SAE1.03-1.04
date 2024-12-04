@@ -1,69 +1,78 @@
 {% extends "layout.html" %}
 
-{% block title %}
-Location
-{% endblock %}
+{% block title %}Ajouter une Location{% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
 
 {% block body %}
+    <div class="form-container">
+        <h1>Ajouter une Location</h1>
 
+        <form action="/location/add" method="POST" class="edit-add-form">
+            <div class="form-group">
+                <label for="prix">Prix : </label>
+                <input type="number" name="prix" id="prix" value="{{ location.prix }}" step="1" required>
+            </div>
 
-<h3>Ajouter une Location</h3>
+            <div class="form-group">
+                <label for="date">Date début location : </label>
+                <input type="date" name="date" id="date" value="{{ location.date }}" required>
+            </div>
 
-<form action="/location/add" method="POST">
+            <div class="form-group">
+                <label for="duree">Durée : </label>
+                <input type="number" name="duree" id="duree" value="{{ location.duree }}" required>
+            </div>
 
+            <div class="form-group">
+                <label for="locataire">Locataire : </label>
+                <select name="locataire" id="locataire" required>
+                    {% if location.locataire == None %}
+                        <option value="" selected disabled hidden>Choisissez un locataire</option>
+                    {% endif %}
+                    {% for individu in individus %}
+                        <option value="{{ individu.id }}"
+                            {% if location.locataire == individu.id %} selected {% endif %}>
+                            {{ individu.nom_prenom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value={{ location.prix }} step="0.01" required>
+            <div class="form-group">
+                <label for="bailleur">Bailleur : </label>
+                <select name="bailleur" id="bailleur" required>
+                    {% if location.bailleur == None %}
+                        <option value="" selected disabled hidden>Choisissez un bailleur</option>
+                    {% endif %}
+                    {% for individu in individus %}
+                        <option value="{{ individu.id }}"
+                            {% if location.bailleur == individu.id %} selected {% endif %}>
+                            {{ individu.nom_prenom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label for="date">Date début location : </label>
-    <input type="date" name="date" id="date" value={{ location.date }} required>
+            <div class="form-group">
+                <label for="velo">Velo : </label>
+                <select name="velo" id="velo" required>
+                    <option value="" selected disabled hidden>Choisissez un velo</option>
+                    {% for velo in velos %}
+                        <option value="{{ velo.code_velo }}">
+                            {{ velo.libelle_velo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" value={{ location.duree }} required>
-
-
-
-    <label for="locataire">Locataire : </label>
-    <select name="locataire" id="locataire" required>
-        {% if location.locataire == None %}
-            <option value="" selected disabled hidden>Choisissez un locataire</option>
-        {% endif %}
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if location.locataire == individu.id %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="bailleur">Bailleur : </label>
-    <select name="bailleur" id="bailleur" required>
-        {% if location.bailleur == None %}
-            <option value="" selected disabled hidden>Choisissez un bailleur</option>
-        {% endif %}
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if location.bailleur == individu.id %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="velo">Velo : </label>
-    <select name="velo" id="velo" required>
-        <option value="" selected disabled hidden>Choisissez un velo</option>
-        {% for velo in velos %}
-            <option value="{{ velo.code_velo }}">
-                {{ velo.libelle_velo }}
-            </option>
-        {% endfor %}
-    </select>
-
-
-    <button type="submit">Ajouter Location</button>
-
-</form>
-
-<a href="/location/show">Retour</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Ajouter Location</button>
+                <a href="/location/show" class="btn btn-secondary">Retour</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}
+

@@ -4,62 +4,79 @@
 Location
 {% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
 
 {% block body %}
+    <div class="form-container">
+        <h1>Modifier une Location</h1>
+
+        <form action="/location/edit" method="POST" class="edit-add-form">
+
+            <div class="form-group">
+                <input type="hidden" name="id" value="{{ location.id }}" id="id" required>
+                <input type="hidden" name="facture" value="{{ location.id_facture }}" id="facture" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prix">Prix : </label>
+                <input type="number" name="prix" id="prix" value="{{ location.prix }}" step="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date début location : </label>
+                <input type="date" name="date" id="date" value="{{ location.date}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="duree">Durée : </label>
+                <input type="number" name="duree" id="duree" value="{{ location.duree }}" required>
+            </div>
 
 
-<h3>Modifier une Location</h3>
+            <div class="form-group">
+                <label for="locataire">Locataire : </label>
+                <select name="locataire" id="locataire" required>
+                    {% for individu in individus %}
+                        <option value="{{ individu.id }}" 
+                            {% if individu.id == location.locataire %} selected {% endif %}>
+                            {{ individu.nom_prenom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-<form action="/location/edit" method="POST">
-
-    <input type="hidden" name="id" value="{{ location.id }}" id="id" required>
-    <input type="hidden" name="facture" value="{{ location.id_facture }}" id="facture" required>
-
-    <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value="{{ location.prix }}" step="1" required>
-
-    <label for="date">Date début location : </label>
-    <input type="date" name="date" id="date" value="{{ location.date}}" required>
-
-    <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" value="{{ location.duree }}" required>
-
-
-
-    <label for="locataire">Locataire : </label>
-    <select name="locataire" id="locataire" required>
-        {% for individu in individus %}
-            <option value="{{ individu.id }}" 
-                {% if individu.id == location.locataire %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-    
-    <label for="bailleur">Bailleur : </label>
-    <select name="bailleur" id="bailleur" required>
-        {% for individu in individus %}
-            <option value="{{ individu.id }}"
-                {% if individu.id == location.bailleur %} selected {% endif %}>
-                {{ individu.nom_prenom }} 
-            </option>
-        {% endfor %}
-    </select>
-    
-    <label for="velo">Velo : </label>
-    <select name="velo" id="velo" required>
-        {% for velo in velos %}
-            <option value="{{ velo.code_velo }}"
-                {% if velo.code_velo == location.code_velo %} selected {% endif %}>
-                {{ velo.libelle_velo }}
-            </option>
-        {% endfor %}
-    </select>
+            <div class="form-group">
+                <label for="bailleur">Bailleur : </label>
+                <select name="bailleur" id="bailleur" required>
+                    {% for individu in individus %}
+                        <option value="{{ individu.id }}"
+                            {% if individu.id == location.bailleur %} selected {% endif %}>
+                            {{ individu.nom_prenom }} 
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="velo">Velo : </label>
+                <select name="velo" id="velo" required>
+                    {% for velo in velos %}
+                        <option value="{{ velo.code_velo }}"
+                            {% if velo.code_velo == location.code_velo %} selected {% endif %}>
+                            {{ velo.libelle_velo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
 
-    <button type="submit">Modifier</button>
-    
-</form>
-
-<a href="/location/show">Retour</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="/location/show" class="btn btn-secondary">Retour</a>
+            </div>
+            
+        </form>
+    </div>
 {% endblock %}
