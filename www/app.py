@@ -236,6 +236,9 @@ def valid_add_location():
     values = (date, duree, locataire, bailleur, velo, id_facture)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f"La location de {prix}€ du {date} pour {duree+1} jours, avec le locataire {locataire}, le bailleur {bailleur}, le velo {velo} et la facture {id_facture} a été ajoutée avec succès", "success")
+    
     return redirect(url_for('show_location'))
 
 
@@ -311,6 +314,9 @@ def valid_edit_location():
     values = (date, duree, locataire, bailleur, velo, id_facture, id)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f"La location de {prix}€ du {date} pour {duree+1} jours, avec le locataire {locataire}, le bailleur {bailleur}, le velo {velo} et la facture {id_facture} a été modifiée avec succès", "success")
+    
     return redirect(url_for('show_location'))
 
 @app.route('/location/delete', methods=['GET'])
@@ -323,6 +329,9 @@ def delete_location():
     values = (id)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash("Location {id} supprimée avec succès!", "success")
+    
     return redirect(url_for('show_location'))
 
 #####################
