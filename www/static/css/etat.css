@@ -2,21 +2,21 @@
     margin-bottom: 20px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     width: 100%;
 }
 
 .form-group label {
+    width: max-content;
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    width: 10%;
 }
 
 .form-group select {
-    width: 80%;
+    width: 75%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -24,8 +24,8 @@
 }
 
 .btn {
+    width: max-content;
     background-color: #3498db;
-    width: 10%;
     color: #fff;
     padding: 10px 20px;
     border-radius: 10px;
