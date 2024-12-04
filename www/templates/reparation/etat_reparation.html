@@ -119,15 +119,15 @@ Réparation
             </tbody>
         </table>
 
+        {% if stat_reparation %}
+            <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
+        {% endif %}
+    
+    
+    </div>
     {% endif %}
 
 
-            {% if stat_reparation %}
-                <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
-            {% endif %}
-
-
-    </div>
     {% elif individu %}
         <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
