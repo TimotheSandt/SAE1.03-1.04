@@ -80,52 +80,7 @@ Réparation
     {% elif individu %}
         <p>Ancune réparation pour {{ individu.nom_prenom }}
     {% endif %}
-
-
-        <form action="/reparation/etat/" method="POST">
-            <label for="selection_velo">Vélo :</label>
-            <select id="selection_velo" name="selection_velo" required>
-                <option value="" disabled selected hidden>Veuillez sélectionnez un vélo </option>
-                {% for velo in selection_velos %}
-                    <option value="{{ velo.code_velo }}">{{ velo.libelle_velo }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Voir l'état</button>
-        </form>
-
-        {% if velos and reparations %} 
-        <div>
-            <h1>État pour {{ velo.libelle_velo }} </h1>
-        
-            <h3>Vélo</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Code</th>
-                        <th>Libellé</th>
-                        <th>Nombre de réparation</th>
-                        <th>Durée total</th>
-                        <th>Montant total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for velo in velos %}
-                    <tr>
-                        <td>{{ velo.code_velo }}</td>
-                        <td>{{ velo.libelle_velo }}</td>
-                        <td>{{ velo.nb }}</td>
-                        <td>{{ velo.duree_total }}</td>
-                        <td>{{ velo.montant_total }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-        {% elif velo %}
-            <p>Ancune réparation pour {{ velo.libelle_velo }}
-        {% endif %}    
-            
-        </div>
+    
         {% if stat_reparation %}
             <p> {{ stat_reparation.nb }} réparation sur un total de {{ stat_reparation.duree_total }} jours pour un total de {{ stat_reparation.montant_total }} €</p>
         {% endif %}
