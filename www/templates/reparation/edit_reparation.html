@@ -4,66 +4,85 @@
 Réparation
 {% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
 
 {% block body %}
 
+    <div class="form-container">
 
-<h3>Modifier une réparation</h3>
+        <h3>Modifier une réparation</h3>
 
-<form action="/reparation/edit" method="POST">
+        <form action="/reparation/edit" method="POST" class="edit-add-form">
 
-    <input type="hidden" name="id" value="{{ reparation.id }}" id="id" required>
-    <input type="hidden" name="facture" value="{{ reparation.id_facture }}" id="facture" required>
-    
-    <label for="type_reparation">Type de réparation : </label>
-    <select name="type_reparation" id="type_reparation" required>
-        {% for type_reparation in types_reparation %}
-            <option value="{{ type_reparation.code_type_reparation }}"
-                {% if type_reparation.code_type_reparation == reparation.code_type_reparation %} selected {% endif %}>
-                {{ type_reparation.libelle_type_reparation }} 
-            </option>
-        {% endfor %}
-    </select>
+            <div class="form-group">
+                <input type="hidden" name="id" value="{{ reparation.id }}" id="id" required>
+                <input type="hidden" name="facture" value="{{ reparation.id_facture }}" id="facture" required>
+            </div>
+                
+            <div class="form-group">
+                <label for="type_reparation">Type de réparation : </label>
+                <select name="type_reparation" id="type_reparation" required>
+                    {% for type_reparation in types_reparation %}
+                        <option value="{{ type_reparation.code_type_reparation }}"
+                            {% if type_reparation.code_type_reparation == reparation.code_type_reparation %} selected {% endif %}>
+                            {{ type_reparation.libelle_type_reparation }} 
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label for="date">Date début réparation : </label>
-    <input type="date" name="date" id="date" value="{{ reparation.date}}" required>
+            <div class="form-group">
+                <label for="date">Date début réparation : </label>
+                <input type="date" name="date" id="date" value="{{ reparation.date}}" required>
+            </div>
 
-    <label for="duree">Durée : </label>
-    <input type="number" name="duree" id="duree" value="{{ reparation.duree }}" required>
+            <div class="form-group">
+                <label for="duree">Durée : </label>
+                <input type="number" name="duree" id="duree" value="{{ reparation.duree }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="prix">Prix : </label>
+                <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="velo">Velo : </label>
+                <select name="velo" id="velo" required>
+                    {% for velo in velos %}
+                        <option value="{{ velo.code_velo }}"
+                            {% if velo.code_velo == reparation.code_velo %} selected {% endif %}>
+                            {{ velo.libelle_velo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="individu">Individu : </label>
+                <select name="individu" id="individu" required>
+                    {% for individu in individus %}
+                        <option value="{{ individu.id }}" 
+                        {% if individu.id == reparation.id_individu %} selected {% endif %}>
+                            {{ individu.nom_prenom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description : </label>
+                <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
+            </div>
 
-    
-    <label for="prix">Prix : </label>
-    <input type="number" name="prix" id="prix" value="{{ reparation.prix }}" step="0.01" required>
-    
-    
-    <label for="velo">Velo : </label>
-    <select name="velo" id="velo" required>
-        {% for velo in velos %}
-            <option value="{{ velo.code_velo }}"
-                {% if velo.code_velo == reparation.code_velo %} selected {% endif %}>
-                {{ velo.libelle_velo }}
-            </option>
-        {% endfor %}
-    </select>
-    
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="/reparation/show" class="btn btn-secondary">Retour</a>
+            </div>
+            
+        </form>
+    </div>
 
-    <label for="individu">Individu : </label>
-    <select name="individu" id="individu" required>
-        {% for individu in individus %}
-            <option value="{{ individu.id }}" 
-            {% if individu.id == reparation.id_individu %} selected {% endif %}>
-                {{ individu.nom_prenom }}
-            </option>
-        {% endfor %}
-    </select>
-    
-
-    <label for="description">Description : </label>
-    <input type="text" name="description" id="description" placeholder="Description" {% if reparation.description != None %} value="{{ reparation.description }}" {% endif %}>
-    
-    <button type="submit">Modifier</button>
-    
-</form>
-
-<a href="/reparation/show">Retour</a>
 {% endblock %}
