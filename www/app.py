@@ -237,7 +237,7 @@ def valid_add_location():
     mycursor.execute(sql, values)
     get_db().commit()
     
-    flash(f"La location de {prix}€ du {date} pour {duree+1} jours, avec le locataire {locataire}, le bailleur {bailleur}, le velo {velo} et la facture {id_facture} a été ajoutée avec succès", "success")
+    flash(f'La location à été ajouter avec succès ! - prix : {prix} €  - date : {date} - durée : {duree+1} jours  - facture : {id_facture} - locataire : {locataire} - bailleur : {bailleur} - velo : {velo}', 'success')
     
     return redirect(url_for('show_location'))
 
@@ -315,7 +315,7 @@ def valid_edit_location():
     mycursor.execute(sql, values)
     get_db().commit()
     
-    flash(f"La location de {prix}€ du {date} pour {duree+1} jours, avec le locataire {locataire}, le bailleur {bailleur}, le velo {velo} et la facture {id_facture} a été modifiée avec succès", "success")
+    flash(f'La location à été modifié avec succès ! - prix : {prix} €  - date : {date} - durée : {duree+1} jours  - facture : {id_facture} - locataire : {locataire} - bailleur : {bailleur} - velo : {velo}', 'success')
     
     return redirect(url_for('show_location'))
 
@@ -330,7 +330,7 @@ def delete_location():
     mycursor.execute(sql, values)
     get_db().commit()
     
-    flash("Location {id} supprimée avec succès!", "success")
+    flash(f"Location {id} supprimée avec succès!", "success")
     
     return redirect(url_for('show_location'))
 
@@ -493,6 +493,9 @@ def valid_add_type_reparation():
     
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f'Type de réparation {libelle} ajouté avec succès !', 'success')
+    
     return redirect('/reparation/show')
 
 
@@ -614,6 +617,9 @@ def valid_add_reparation():
     values = (date, duree, description, prix, facture, type_reparation, velo, individu)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f'La réparation à été ajouter avec succès ! - description : {description} - date : {date} - durée : {duree} jours  - prix : {prix} €  - facture : {facture} -type de réparation : {type_reparation} - velo : {velo}  - individu : {individu}', 'success')
+    
     return redirect(url_for('show_reparation'))
 
 
@@ -706,6 +712,9 @@ def valid_edit_reparation():
     values = (date, duree, description, prix, id_facture, type_reparation, velo, individu, id)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f'La réparation à été ajouter avec succès ! - description : {description} - date : {date} - durée : {duree} jours  - prix : {prix} €  - facture : {id_facture} -type de réparation : {type_reparation} - velo : {velo}  - individu : {individu}', 'success')
+    
     return redirect(url_for('show_reparation'))
 
 
@@ -719,6 +728,10 @@ def delete_reparation():
     values = (id)
     mycursor.execute(sql, values)
     get_db().commit()
+    
+    flash(f'La réparation {id} a été supprimée avec succès !', 'success')
+    
+    
     return redirect(url_for('show_reparation'))
 
 #######################
@@ -844,24 +857,6 @@ def valid_etat_reparation():
 ########### Velo ###########
 ############################
 
-def get_db():
-    if 'db' not in g:
-        g.db = pymysql.connect(
-            host=app.config["DB_HOST"],
-            user=app.config["DB_USER"],
-            password=app.config["DB_PASSWORD"],
-            database=app.config["DB_NAME"],
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
-        )
-    return g.db
-
-@app.teardown_appcontext
-def teardown_db(exception):
-    db = g.pop('db', None)
-    if db is not None:
-        db.close()
-
 
 def get_velos():
     mycursor = get_db().cursor()
@@ -916,7 +911,9 @@ def valid_add_velo():
     values = (libelle_velo, prix, date_achat, code_categorie_velo, code_etat)
     mycursor.execute(sql, values)
     get_db().commit()
-    flash("Vélo ajouté avec succès !", "success")
+    
+    flash(f"Vélo {libelle_velo} ajouté avec succès ! - Prix : {prix} - Date d'achat : {date_achat} - Catégorie : {code_categorie_velo} - Etat : {code_etat}", "success")
+    
     return redirect(url_for('show_velo'))
 
 @app.route('/velo/edit', methods=['GET'])
@@ -961,7 +958,9 @@ def valid_edit_velo():
     values = (libelle_velo, prix, date_achat, code_categorie_velo, code_etat, id)
     mycursor.execute(sql, values)
     get_db().commit()
-    flash("Vélo modifié avec succès !", "success")
+    
+    flash(f"Vélo {libelle_velo} modifié avec succès ! - Prix : {prix} - Date d'achat : {date_achat} - Catégorie : {code_categorie_velo} - Etat : {code_etat}", "success")
+    
     return redirect(url_for('show_velo'))
 
 @app.route('/velo/delete', methods=['GET'])
@@ -976,7 +975,9 @@ def delete_velo():
     sql = "DELETE FROM Velo WHERE code_velo = %s;"
     mycursor.execute(sql, (id,))
     get_db().commit()
-    flash("Vélo supprimé avec succès !", "success")
+    
+    flash(f"Vélo avec ID {id} supprimé avec succès !", "success")
+    
     return redirect(url_for('show_velo'))
 
 #################
