@@ -772,11 +772,11 @@ def render_etat_reparation(id_individu):
     
     # recherche des velos
     mycursor = get_db().cursor()
-    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Location.duree + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
+    sql =   ''' SELECT Velo.code_velo, Velo.libelle_velo, COUNT(Velo.code_velo) AS nb, SUM(Reparation.duree + 1) AS duree, ROUND(SUM(Facture.prix_total), 2) AS montant
                 FROM Velo
-                JOIN Location ON Velo.code_velo = Location.code_velo
-                JOIN Facture ON Location.id_facture = Facture.id_facture
-                WHERE Location.locataire = %s OR Location.bailleur = %s
+                JOIN Reparation ON Velo.code_velo = Reparation.code_velo
+                JOIN Facture ON Reparation.id_facture = Facture.id_facture
+                WHERE Reparation.id_individu = %s
                 GROUP BY Velo.code_velo, Velo.libelle_velo
                 ORDER BY nb DESC;
             '''
@@ -847,8 +847,9 @@ def render_etat_reparation(id_individu):
 
 @app.route('/reparation/etat/', methods=['GET'])
 def show_etat_reparation():
+    selection_velos = get_velos()
     selection_individus = get_individu()
-    return render_template('reparation/etat_reparation.html', selection_individus=selection_individus, individu=None)
+    return render_template('reparation/etat_reparation.html', selection_individus=selection_individus, individu=None, selection_velos=selection_velos, velo=None)
 
 
 @app.route('/reparation/etat/', methods=['POST'])
